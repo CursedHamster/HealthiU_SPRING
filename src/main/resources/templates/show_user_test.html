@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+    <!--    <link rel="stylesheet" href="css/style.css">-->
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+    <link rel = "icon" type = "image/png" th:href = "@{/img/clipboard-heart-fill.svg}">
+
+    <title>HealthiU | Перегляд тестів</title>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/test">Healthi<coloru>U</coloru></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+             aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Healthi<coloru>U</coloru></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/test">Тест</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/chatroom">Повідомлення</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Мій профіль</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript: document.logoutForm.submit()">Вийти</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="page-template text-center show-test-template show-user-test-template">
+    <div>
+        <div class="page-title">
+            Перегляд тестів
+        </div>
+        <hr>
+    </div>
+    <div class="page-content">
+
+        <form id="find_user_test_form" name="findUserTestForm">
+            <div class="form-group">
+                <input id="find_user_test_input" name="login" type="text" class="form-control" placeholder="Логін користувача">
+                <div id="test_exists" class="invalid-input"></div>
+                    <div class="two-btn-row">
+                        <button id="back_to_see_test" class="btn btn-primary btn-lg">Назад</button>
+                        <input type="submit" class="btn btn-primary btn-lg" value="Знайти"/>
+                    </div>
+            </div>
+        </form>
+
+        <div id="found_user_info" class="container healthiu-form hidden">
+            <div class="row">
+                <div class="col show-test-row">
+                    <div class="row">
+                        <div class="col show-test-col-1">
+                            Стать
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="gender_test" class="col show-test-col-2"></div>
+                    </div>
+                </div>
+                <div class="col show-test-row">
+                    <div class="row">
+                        <div class="col show-test-col-1">
+                            Вік
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="age_test" class="col show-test-col-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col show-test-row">
+                    <div class="row">
+                        <div class="col show-test-col-1">
+                            Ріст
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="height_test" class="col show-test-col-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="col show-test-row">
+                    <div class="row">
+                        <div class="col show-test-col-1">
+                            Вага
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="weight_test" class="col show-test-col-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col show-test-row">
+                    <div class="row">
+                        <div class="col show-test-col-1">
+                            Обхват грудей
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="chest_size_test" class="col show-test-col-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="col show-test-row">
+                    <div class="row">
+                        <div class="col show-test-col-1">
+                            Обхват талії
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="waist_size_test" class="col show-test-col-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="col show-test-row">
+                    <div class="row">
+                        <div class="col show-test-col-1">
+                            Обхват стегон
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="hip_size_test" class="col show-test-col-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col show-test-row">
+                    <div class="row">
+                        <div class="col show-test-col-1">
+                            Група крові
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="blood_type_test" class="col show-test-col-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="col show-test-row">
+                    <div class="row">
+                        <div class="col show-test-col-1">
+                            ІМТ (індекс маси тіла)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="bmi_test" class="col show-test-col-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col show-test-row">
+                    <div class="row">
+                        <div class="col show-test-col-1">
+                            Результат
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="result_test" class="col show-test-col-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+    <input type="submit" value="Sign Out"/>
+</form>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:inline="javascript">
+    let findUserTestForm = document.getElementById("find_user_test_form");
+    let backToSeeTest = document.getElementById("back_to_see_test");
+    let findUserTestInput = $('#find_user_test_input');
+    let foundUserInfo = $('#found_user_info');
+    let testExists = $('#test_exists');
+    backToSeeTest.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.location.href='/profile/test';
+    })
+    findUserTestForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        testExists.text(null);
+        let login = findUserTestInput.val();
+        getUserTest(login);
+    })
+    function getUserTest(login) {
+        $.get("/profile/tests/" + login, function (responseJSON) {
+            let data = JSON.parse(responseJSON);
+            $('#gender_test').text(data.gender);
+            $('#age_test').text(data.age);
+            $('#height_test').text(data.height);
+            $('#weight_test').text(data.weight);
+            $('#chest_size_test').text(data.chestSize);
+            $('#waist_size_test').text(data.waistSize);
+            $('#hip_size_test').text(data.hipSize);
+            $('#blood_type_test').text(data.bloodType);
+            $('#bmi_test').text(data.bmi);
+            $('#result_test').text(data.testResult);
+        }).done(function (e) {
+            if (foundUserInfo.hasClass("hidden")) {
+                foundUserInfo.removeClass("hidden");
+            }
+        }).fail(function () {
+            testExists.text("Цього тесту не існує!");
+            if (!foundUserInfo.hasClass("hidden")) {
+                foundUserInfo.addClass("hidden");
+            }
+        })
+    }
+</script>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
+</script>
+</body>
+
+</html>

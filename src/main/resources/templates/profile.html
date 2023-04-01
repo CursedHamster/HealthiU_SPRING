@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+    <!--    <link rel="stylesheet" href="css/style.css">-->
+    <link rel="icon" type="image/png" th:href="@{/img/clipboard-heart-fill.svg}">
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+    <!-- <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css"> -->
+
+    <title>HealthiU | Мій профіль</title>
+</head>
+
+<body>
+<nav th:if="${role != 'ADMIN'}" class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/test">Healthi<coloru>U</coloru></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+             aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Healthi<coloru>U</coloru></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/test">Тест</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/chatroom">Повідомлення</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/profile">Мій профіль</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript: document.logoutForm.submit()">Вийти</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<nav th:if="${role == 'ADMIN'}" class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/test">Healthi<coloru>U</coloru></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+             aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Healthi<coloru>U</coloru></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/test">Тест</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/chatroom">Чати</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin-register">Реєстрація</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/profile">Мій профіль</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript: document.logoutForm.submit()">Вийти</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<div class="page-template text-center register-template profile-template">
+    <div>
+        <div class="page-title">
+            Мій профіль
+        </div>
+        <hr>
+    </div>
+    <div class="page-content">
+        <form id="edit_form" class="healthiu-form" th:action="@{/profile/edit}" th:object="${userData}"
+              method="post">
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="login_edit">Введіть свій логін</label>
+                <div class="col-sm-10">
+                    <input id="login_edit" class="form-control" type="text" th:field="*{login}" name="login" value="lox"
+                           readonly/>
+                    <div class="invalid-input"> </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="name_edit">Введіть своє ім'я</label>
+                <div class="col-sm-10">
+                    <input id="name_edit" class="form-control" type="text" th:field="*{name}" name="name"
+                           placeholder="Ім'я"/>
+                    <div id="error_name_edit" class="invalid-input"> </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="email_edit">Введіть свій email</label>
+                <div class="col-sm-10">
+                    <input id="email_edit" class="form-control" type="text" th:field="*{email}" name="email"
+                           placeholder="Email"/>
+                    <div id="error_email_edit" class="invalid-input"> </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="password_edit">Введіть свій пароль</label>
+                <div class="col-sm-10">
+                    <div class="input-group">
+
+                        <input id="password_edit" class="form-control" type="password" th:field="*{password}"
+                               name="password" placeholder="Пароль" data-toggle="password"/>
+                        <div class="input-group-append">
+
+                                <span class="input-group-text">
+
+                                    <i class="bi bi-eye-fill"></i>
+
+                                </span>
+
+                        </div>
+                    </div>
+                    <div id="error_password_edit" class="invalid-input"> </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="confirm_password_edit">Підтвердіть пароль</label>
+                <div class="col-sm-10">
+                    <div class="input-group">
+                        <input id="confirm_password_edit" class="form-control" type="password"
+                               th:field="*{confirmPassword}" name="confirm_password" placeholder="Пароль"
+                               data-toggle="password"/>
+                        <div class="input-group-append">
+
+                                <span class="input-group-text">
+
+                                    <i class="bi bi-eye-fill"></i>
+
+                                </span>
+
+                        </div>
+                    </div>
+                    <div id="error_confirm_password_edit" class="invalid-input"> </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="date_of_birth_edit">Введіть свою дату
+                    народження</label>
+                <div class="col-sm-10">
+                    <input id="date_of_birth_edit" class="form-control" type="date" th:field="*{dateOfBirth}"
+                           name="date_of_birth" placeholder="Дата народження"/>
+                    <div id="error_date_of_birth_edit" class="invalid-input"> </div>
+                </div>
+            </div>
+            <div class="form-group row form-btn-divider"></div>
+            <div class="two-btn-row">
+                <input class="btn btn-primary btn-lg" type="submit" value="Редагувати"/>
+                <button id="show_test" type="button" class="btn btn-primary btn-lg">
+                    Переглянути тест
+                </button>
+            </div>
+        </form>
+        <div id="email_exists_edit" class="register-invalid-input" th:text="${emailExists}"></div>
+        <div id="edit_successful" class="register-invalid-input" th:text="${successfulEdit}"></div>
+    </div>
+</div>
+
+<form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+    <input type="submit" value="Sign Out"/>
+</form>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:inline="javascript">
+    let editForm = document.getElementById("edit_form");
+    let showTest = document.getElementById("show_test");
+    let errorNameEdit = $('#error_name_edit');
+    let errorEmailEdit = $('#error_email_edit');
+    let errorPasswordEdit = $('#error_password_edit');
+    let errorConfirmPasswordEdit = $('#error_confirm_password_edit');
+    let errorDateOfBirthEdit = $('#error_date_of_birth_edit');
+
+    showTest.addEventListener("click", function (e) {
+        window.location.href = '/profile/test';
+    })
+
+    editForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            $('#email_exists_edit').text(null);
+            $('#edit_successful').text(null);
+            let errorCount = 0;
+
+            let name = $('#name_edit').val();
+            let email = $('#email_edit').val();
+            let password = $('#password_edit').val();
+            let confirmPassword = $('#confirm_password_edit').val();
+            let dateOfBirth = $('#date_of_birth_edit').val();
+
+            errorNameEdit.text(" ");
+            errorEmailEdit.text(" ");
+            errorPasswordEdit.text(" ");
+            errorConfirmPasswordEdit.text(" ");
+            errorDateOfBirthEdit.text(" ");
+
+            if (!checkName(name)) {
+                errorNameEdit.text("Неправильне ім\'я");
+                errorCount++;
+            }
+
+            if (!checkEmail(email)) {
+                errorEmailEdit.text("Неправильний email.");
+                errorCount++;
+            }
+
+            if (!checkPassword(password)) {
+                errorPasswordEdit.text("Неправильний пароль.");
+                errorCount++;
+            }
+
+            if (!checkConfirmPassword(password, confirmPassword)) {
+                errorConfirmPasswordEdit.text("Паролі не співпадають.");
+                errorCount++;
+            }
+
+            if (!checkDateOfBirth(dateOfBirth)) {
+                errorDateOfBirthEdit.text("Неправильна дата народження. Користуватись HealthiU можна починаючи з 14 років.");
+                errorCount++;
+            }
+
+            if (errorCount === 0) {
+                if (confirm('Ви впевнені, що хочете зберегти зміни?')) {
+                    editForm.submit();
+                }
+            }
+        }
+    )
+
+    function checkName(name) {
+        if (isEmpty(name)) {
+            return false;
+        }
+
+        if (hasSpacesBeforeOrAfter(name)) {
+            return false;
+        }
+
+        return !(name.length < 2 || name.length > 20);
+    }
+
+    function checkEmail(email) {
+        const regex_pattern =
+            /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return regex_pattern.test(email);
+    }
+
+    function checkPassword(password) {
+        if (isEmpty(password)) {
+            return true;
+        }
+
+        if (hasSpacesBeforeOrAfter(password)) {
+            return false;
+        }
+
+        if (hasSpaces(password)) {
+            return false;
+        }
+
+        return !(password.length < 6 || password.length > 10);
+    }
+
+    function checkConfirmPassword(password, confirmPassword) {
+        return password === confirmPassword;
+    }
+
+    function checkDateOfBirth(dateOfBirth) {
+        let ageDifMs = Date.now() - new Date(dateOfBirth);
+        let ageDate = new Date(ageDifMs);
+        return (Math.abs(ageDate.getUTCFullYear() - 1970)) >= 14;
+    }
+
+    function isEmpty(text) {
+        return text.length === 0 || isSpaces(text);
+    }
+
+    function hasSpaces(text) {
+        for (let i = 0; i < text.length; i++) {
+            if ((text[i]) === ' ') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function isSpaces(text) {
+        return text.trim().length === 0;
+    }
+
+    function hasSpacesBeforeOrAfter(text) {
+        return text.length > text.trim().length;
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+</script>
+<script th:src="@{/js/bootstrap-show-password.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
+</script>
+</body>
+
+</html>

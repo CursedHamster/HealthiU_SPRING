@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+<!--    <link rel="stylesheet" href="css/style.css">-->
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+    <link rel = "icon" type = "image/png" th:href = "@{/img/clipboard-heart-fill.svg}">
+
+    <title>HealthiU | Повідомлення</title>
+
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/test">Healthi<coloru>U</coloru></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+             aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Healthi<coloru>U</coloru></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/test">Тест</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/chatroom">Повідомлення</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Мій профіль</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript: document.logoutForm.submit()">Вийти</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="page-template text-center register-template chatroom-template">
+    <div>
+        <div class="page-title">
+            Повідомлення
+        </div>
+        <hr>
+    </div>
+    <div class="chatroom-messaging">
+        <div class="chatroom-title">З Вами розмовляє: [[${recipientLogin}]]
+        </div>
+    <div class="page-content">
+        <div class="chatroom-doctor-content" th:if="${role == 'DOCTOR'}">
+            <button class="btn doctor-content-btn" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                <div class="bi bi-arrow-right-circle"></div>
+            </button>
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample"
+                 aria-labelledby="offcanvasExampleLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Healthi<coloru>U</coloru>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <div class="offcanvas-body">
+                    <div>
+                        <button th:if="${!requested_doctor}" class="btn btn-primary btn-nl"
+                                onclick="requestChatRoomDoctor()">Запит на новий чат</button>
+                        <button th:if="${requested_doctor}" class="btn btn-primary btn-nl"
+                                onclick="unrequestChatRoomDoctor()">Відмінити запит</button>
+                    </div>
+                    <div class="chatroom-doctor-title">
+                        Виберіть чат
+                    </div>
+                    <ul class="chat_rooms list-group">
+                    </ul>
+                </div>
+            </div>
+        </div>
+            <div class="chatroom-chat-window">
+                <ul class="messages open"></ul>
+                <div class="form-group">
+                    <!-- <input id="message_input_value" class="form-control" type="text" placeholder="Type your message here..." /> -->
+                    <div class="chatroom-textarea"><textarea id="message_input_value" class="form-control"
+                                                             placeholder="Почніть набирати повідомлення..." autofocus></textarea>
+                    </div>
+                    <button id="send_message_button" class="btn btn-primary send-message" onclick="sendMessage()">
+                        <div class="bi bi-send-fill"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="message_template" class="message_template">
+            <li class="message">
+                <div class="text-wrapper">
+                    <div class="text"></div>
+                    <div class="message-info">
+                        <div class="time"></div>
+                        <div class="status"></div>
+                    </div>
+                </div>
+            </li>
+        </div>
+        <div id="chat_room_template" class="chat_room_template">
+            <li class="chat_room list-group-item">
+                <a class="login">Login</a>
+            </li>
+        </div>
+    </div>
+</div>
+<form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+    <input type="submit" value="Sign Out"/>
+</form>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
+</script>
+<script th:inline="javascript">
+    let messageInput = document.getElementById("message_input_value");
+    var userLogin = "hamham";
+    $('.chat_rooms').empty();
+    let chatRoomList = [[${chatRoomList}]];
+    if ([[${role}]] === "DOCTOR" && chatRoomList !== null) {
+        for (let i = 0; i < chatRoomList.length; i++) {
+            if (i === 0) {
+                userLogin = chatRoomList[i];
+            }
+            drawLogin(chatRoomList[i]);
+        }
+    }
+
+    if ([[${role}]] === "USER" && chatRoomList.length === 0 &&
+        window.location.href !== (window.location.origin + '/chatroom/user-' + [[${recipientLogin}]])) {
+        window.location.replace('/chatroom/user-' + [[${recipientLogin}]]);
+    }
+
+    // $( document ).ready(function() {
+    //     connect();
+    // });
+
+    function connect() {
+        let socket = new SockJS('/chat-messaging');
+        stompClient = Stomp.over(socket);
+        $('.messages').empty();
+        let messageList = [[${messageList}]];
+        for (let i = 0; i < messageList.length; i++) {
+            let data = JSON.parse(messageList[i]);
+            if ((data.senderLogin === [[${senderLogin}]] && data.recipientLogin === [[${recipientLogin}]]) ||
+                (data.senderLogin === [[${recipientLogin}]] && data.recipientLogin === [[${senderLogin}]])) {
+                if (data.senderLogin === [[${#httpServletRequest.remoteUser}]]) {
+                    draw("right", data.content, data.timestamp, data.status);
+                } else {
+                    draw("left", data.content, data.timestamp);
+                    updateMessageStatus(data.id);
+                }
+            }
+        }
+        stompClient.connect({}, function (frame) {
+            console.log("connected: " + frame);
+            stompClient.subscribe('/chat/messages', function (response) {
+                var data = JSON.parse(response.body);
+                if ((data.senderLogin === [[${senderLogin}]] && data.recipientLogin === [[${recipientLogin}]]) ||
+                    (data.senderLogin === [[${recipientLogin}]] && data.recipientLogin === [[${senderLogin}]])) {
+                    if (data.senderLogin === [[${#httpServletRequest.remoteUser}]]) {
+                        draw("right", data.content, data.timestamp, data.status);
+                    } else {
+                        draw("left", data.content, data.timestamp);
+                        updateMessageStatus(data.id);
+                    }
+                }
+            });
+        });
+    }
+
+    function draw(side, text, date, status) {
+        console.log("drawing...");
+        var $message;
+        $message = $($('.message_template').clone().html());
+        $message.addClass(side).find('.text').html(text);
+        if (status != null) {
+            if (status === "READ") {
+                $message.find('.status').addClass('read');
+            } else {
+                $message.find('.status').addClass('unread');
+            }
+        }
+        let d = new Date(date);
+        let hours = (d.getHours() > 9) ? d.getHours().toString() : "0" + d.getHours().toString();
+        let minutes = (d.getMinutes() > 9) ? d.getMinutes().toString() : "0" + d.getMinutes().toString();
+        $message.find('.time').html(hours + ":" + minutes);
+        $('.messages').append($message);
+
+        var element = document.querySelector('.messages');
+
+        element.scrollTop = element.scrollHeight;
+
+        return setTimeout(function () {
+            return $message.addClass('appeared');
+        }, 0);
+
+    }
+
+    function drawLogin(login) {
+        var $chat_room;
+        $chat_room = $($('.chat_room_template').clone().html());
+        $chat_room.addClass('chat_room_style').find('.login').html(login);
+        $chat_room.find('.login').attr('href', '/chatroom/user-' + login);
+        $('.chat_rooms').append($chat_room);
+    }
+
+    $(window).bind('beforeunload', function(){
+        disconnect();
+    });
+
+    $(window).on('resize', function(){
+        var element = document.querySelector('.messages');
+
+        element.scrollTop = element.scrollHeight;
+    });
+
+    function disconnect() {
+        stompClient.disconnect();
+    }
+
+    function sendMessage() {
+        const senderLogin = [[${#httpServletRequest.remoteUser}]];
+        const recipientLogin = [[${recipientLogin}]];
+        let messageInput = $("#message_input_value");
+
+        stompClient.send("/app/message", {}, JSON.stringify({
+            'content': messageInput.val(),
+            'senderLogin': senderLogin,
+            'recipientLogin': recipientLogin
+        }));
+
+        messageInput.val(null);
+    }
+
+    function requestChatRoomDoctor() {
+        $.ajax({
+            type: "GET",
+            url: "/chatroom/request-chatroom-doctor",
+            success: function (response) {
+                window.location.reload();
+            }
+        });
+    }
+
+    function unrequestChatRoomDoctor() {
+        $.ajax({
+            type: "GET",
+            url: "/chatroom/unrequest-chatroom-doctor",
+            success: function (response) {
+                window.location.reload();
+            }
+        });
+    }
+
+    function updateMessageStatus(id) {
+        $.ajax
+        ({
+            url: "/chatroom/update-status/" + id,
+            type : "GET"
+        });
+    }
+
+    messageInput.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            document.getElementById("send_message_button").click();
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+    <!--    <link rel="stylesheet" href="css/style.css">-->
+    <link rel="icon" type="image/png" th:href = "@{/img/clipboard-heart-fill.svg}">
+    <!-- <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css"> -->
+
+    <title>HealthiU | Повідомлення</title>
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
+    <script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/test">Healthi<coloru>U</coloru></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+             aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Healthi<coloru>U</coloru></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/test">Тест</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/chatroom">Чати</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin-register">Реєстрація</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Мій профіль</a>
+                    </li>
+                    <span class="nav-item-divider"></span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript: document.logoutForm.submit()">Вийти</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="page-template text-center admin-chatroom-template">
+    <div>
+        <div class="page-title">
+            Створення чатів
+        </div>
+        <hr>
+    </div>
+    <div class="page-content">
+        <div class="admin-request-window">
+            <div class="login-list">
+                <p>Запити від користувачів</p>
+                <ul class="user_requests list-group">
+                </ul>
+            </div>
+            <div class="login-list">
+                <p>Запити від лікарів</p>
+                <ul class="doctor_requests list-group">
+                </ul>
+            </div>
+        </div>
+
+        <div class="user_login_input_wrapper">
+            <input id="user_login_input_value" class="user_login_input form-control" placeholder="Логін користувача" />
+            <input id="doctor_login_input_value" class="doctor_login_input form-control"
+                   placeholder="Логін лікаря" />
+        </div>
+
+        <div class="admin-chatroom-add-chatroom">
+            <button onclick="addChatRoom()" class="btn btn-primary btn-lg">Створити чат</button>
+
+            <!-- _______________alert_____________ -->
+            <p id="chat_room_invalid" class="invalid-input" style="display: none;">Чат неможливо створити</p>
+        </div>
+        <div id="user_request_template" class="user_request_template">
+            <li class="user_request list-group-item">
+                <div class="text_wrapper">
+                    <div class="user_request_text"></div>
+                </div>
+            </li>
+        </div>
+
+        <div id="doctor_request_template" class="doctor_request_template">
+            <li class="doctor_request list-group-item">
+                <div class="text_wrapper">
+                    <div class="doctor_request_text"></div>
+                </div>
+            </li>
+        </div>
+    </div>
+</div>
+<form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+    <input type="submit" value="Sign Out"/>
+</form>
+<script th:inline="javascript">
+    $('.user_requests').empty();
+    let userRequestList = [[${userRequestList}]];
+    if (userRequestList !== null) {
+        for (let i = 0; i < userRequestList.length; i++) {
+            drawUserRequest(userRequestList[i]);
+        }
+    }
+
+    $('.doctor_requests').empty();
+    let doctorRequestList = [[${doctorRequestList}]];
+    if (doctorRequestList !== null) {
+        for (let i = 0; i < doctorRequestList.length; i++) {
+            drawDoctorRequest(doctorRequestList[i]);
+        }
+    }
+
+    function drawUserRequest(userLogin) {
+        var $user_request;
+        $user_request = $($('.user_request_template').clone().html());
+        $user_request.addClass('user_request_style').find('.user_request_text').html(userLogin);
+        console.log(userLogin);
+        $('.user_requests').append($user_request);
+    }
+
+    function drawDoctorRequest(doctorLogin) {
+        var $doctor_request;
+        $doctor_request = $($('.doctor_request_template').clone().html());
+        $doctor_request.addClass('doctor_request_style').find('.doctor_request_text').html(doctorLogin);
+        console.log(doctorLogin);
+        $('.doctor_requests').append($doctor_request);
+    }
+
+    function addChatRoom() {
+        $.ajax({
+            type: "GET",
+            url: "/chatroom/admin/add-chatroom/" + $('#user_login_input_value').val() + "/" + $(
+                '#doctor_login_input_value').val(),
+            success: function () {
+                console.log("success")
+                $('#chat_room_invalid').css('display', 'none');
+                window.location.reload()
+            },
+            error: function () {
+                console.log("error")
+                $('#chat_room_invalid').css('display', 'block');
+            }
+        });
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
+</script>
+</body>
+
+</html>
