@@ -5,5 +5,4 @@ public enum BloodType {
     A,
     B,
     AB
-    ;
 }

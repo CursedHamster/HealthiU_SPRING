@@ -2,8 +2,7 @@ package com.example.healthiu.entity;
 
 public enum Gender {
     MALE("Чоловік"),
-    FEMALE("Жінка")
-    ;
+    FEMALE("Жінка");
 
     private final String gender;
 

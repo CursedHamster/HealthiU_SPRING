@@ -1,11 +1,9 @@
 package com.example.healthiu.entity;
+
 public enum MessageStatus {
     UNREAD("UNREAD"), READ("READ");
 
-    private String status;
-
-    MessageStatus() {
-    }
+    private final String status;
 
     MessageStatus(String status) {
         this.status = status;
