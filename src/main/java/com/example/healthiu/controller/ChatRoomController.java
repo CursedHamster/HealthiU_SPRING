@@ -1,6 +1,9 @@
-package com.example.healthiu.rest;
+package com.example.healthiu.controller;
 
-import com.example.healthiu.entity.*;
+import com.example.healthiu.entity.MessageStatus;
+import com.example.healthiu.entity.Role;
+import com.example.healthiu.entity.table.ChatRoom;
+import com.example.healthiu.entity.table.Message;
 import com.example.healthiu.service.ChatRoomRequestService;
 import com.example.healthiu.service.ChatRoomService;
 import com.example.healthiu.service.MessageService;
@@ -8,8 +11,6 @@ import com.example.healthiu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,20 +20,22 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/chatroom")
 public class ChatRoomController {
-    @Autowired
-    UserService userService;
-    @Autowired
-    private ChatRoomService chatRoomService;
+    private final UserService userService;
+    private final ChatRoomService chatRoomService;
+
+    private final ChatRoomRequestService chatRoomRequestService;
+    private final MessageService messageService;
 
     @Autowired
-    private ChatRoomRequestService chatRoomRequestService;
-
-    @Autowired
-    private MessageService messageService;
+    public ChatRoomController(UserService userService, ChatRoomService chatRoomService, ChatRoomRequestService chatRoomRequestService, MessageService messageService) {
+        this.userService = userService;
+        this.chatRoomService = chatRoomService;
+        this.chatRoomRequestService = chatRoomRequestService;
+        this.messageService = messageService;
+    }
 
     @GetMapping("/requested")
     public ResponseEntity<Boolean> getRequested(@RequestParam(name = "login") String login) {

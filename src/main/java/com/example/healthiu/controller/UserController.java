@@ -1,8 +1,8 @@
-package com.example.healthiu.rest;
+package com.example.healthiu.controller;
 
-import com.example.healthiu.entity.User;
 import com.example.healthiu.entity.UserData;
-import com.example.healthiu.security.jwt.JwtTokenProvider;
+import com.example.healthiu.entity.table.User;
+import com.example.healthiu.security.JwtTokenProvider;
 import com.example.healthiu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,17 +13,20 @@ import java.util.Objects;
 
 import static org.springframework.http.ResponseEntity.ok;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-    @Autowired
     UserService userService;
 
-    @Autowired
     JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("")
+    @Autowired
+    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider) {
+        this.userService = userService;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
+    @GetMapping
     public ResponseEntity<User> getUser(@RequestParam(name = "login") String userLogin, @RequestParam String token) {
         boolean validated = jwtTokenProvider.validateToken(token);
         User user = userService.findUserByLogin(userLogin);
@@ -31,6 +34,17 @@ public class UserController {
             return ok(user);
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("/{login}")
+    public ResponseEntity<User> getUserInfo(@PathVariable(name = "login") String login) {
+        if (userService.checkIfUserExist(login)) {
+            User user = userService.findUserByLogin(login);
+            user.setPassword(null);
+            user.setEmail(null);
+            return ok(user);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/change")

@@ -1,15 +1,16 @@
-package com.example.healthiu.entity;
+package com.example.healthiu.entity.table;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "chat_room")
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 public class ChatRoom {
     @Id
@@ -36,11 +37,16 @@ public class ChatRoom {
         this.doctorColor = doctorColor;
     }
 
-    public Long getUnreadMessagesCount() {
-        return unreadMessagesCount;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        ChatRoom chatRoom = (ChatRoom) o;
+        return id != null && Objects.equals(id, chatRoom.id);
     }
 
-    public void setUnreadMessagesCount(Long unreadMessagesCount) {
-        this.unreadMessagesCount = unreadMessagesCount;
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

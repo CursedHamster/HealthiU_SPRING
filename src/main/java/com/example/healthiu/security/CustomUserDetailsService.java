@@ -1,4 +1,4 @@
-package com.example.healthiu.security.jwt;
+package com.example.healthiu.security;
 
 import com.example.healthiu.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +18,5 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return (UserDetails) this.users.findUserByLogin(username);
-//                .orElseThrow(() -> new UsernameNotFoundException("Username: " + username + " not found"));
     }
 }

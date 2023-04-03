@@ -1,4 +1,4 @@
-package com.example.healthiu.security.jwt;
+package com.example.healthiu.security;
 
 import org.springframework.security.core.AuthenticationException;
 

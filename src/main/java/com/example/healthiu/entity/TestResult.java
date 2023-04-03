@@ -1,45 +1,39 @@
 package com.example.healthiu.entity;
 
 public enum TestResult {
-    UNDERWEIGHT("У Вас недостатня вага. Рекомендується її набрати."),
-    NORMAL("Ваша вага в межах норми. Ви можете просто її підтримувати."),
-    OVERWEIGHT("У Вас надлишкова вага. Рекомендується її скинути."),
-    OBESE("У Вас ожиріння 1-го ступеню. Строго рекомендується скинути вагу. Будь ласка, піклуйтесь про своє здоров'я."),
-    EXTREMELY_OBESE("У Вас ожиріння 2-го ступеню. Будь ласка, проконсультуйтеся зі своїм лікарем і якомога швидше " +
-            "почніть лікування."),
-    MORBIDLY_OBESE("У Вас ожиріння 3-го ступеню. Це смертельно небезпечно. Зараз для Вас важливо якнайшвидше зв'язатися " +
-            "з лікарем, щоб запобігти серйозним наслідкам."),
+    UNDERWEIGHT("underweight"),
+    NORMAL("normal"),
+    OVERWEIGHT("overweight"),
+    OBESE("obese"),
+    EXTREMELY_OBESE("extremelyObese"),
+    MORBIDLY_OBESE("morbidlyObese"),
 
-    RATION_O_STOP_GAIN("Пшениця (клейковина), Кукурудза, Звичайна овочева квасоля, Боби темні, Сочевиця, " +
-            "Кочанна капуста, Брюссельська капуста, Цвітна капуста, Молоде листя гірчиці."),
-    RATION_O_STOP_LOSE("Печінка, Червоне м'ясо, Капуста листова, капуста спаржева (брокколі), шпинат."),
-    RATION_O_LOSE("Бура водорость, Морські продукти, Йодована сіль, Печінка, Червоне м'ясо, Капуста листова, " +
-            "капуста спаржева (брокколі), шпинат."),
-    RATION_O_GAIN("Пшениця (клейковина), Кукурудза, Звичайна овочева квасоля, Боби темні, Сочевиця, Морські продукти."),
+    RATION_O_STOP_GAIN("dietOStopGain"),
+    RATION_O_STOP_LOSE("dietOStopLose"),
+    RATION_O_LOSE("dietOLose"),
+    RATION_O_GAIN("dietOGain"),
 
-    RATION_A_STOP_GAIN("М'ясо, Молочна їжа, Звичайна овочева квасоля, Лімська квасоля, Пшениця (при споживанні понад міру)."),
-    RATION_A_STOP_LOSE("Соєві продукти, Овочі, Ананаси."),
-    RATION_A_LOSE("Рослинні олії, Соєві продукти, Овочі, Ананаси."),
-    RATION_A_GAIN("М'ясо, Молочна їжа, Звичайна овочева квасоля, Лімська квасоля, Рослинні олії."),
+    RATION_A_STOP_GAIN("dietAStopGain"),
+    RATION_A_STOP_LOSE("dietAStopLose"),
+    RATION_A_LOSE("dietALose"),
+    RATION_A_GAIN("dietAGain"),
 
-    RATION_B_STOP_GAIN("Кукурудза, Сочевиця, Земляні горіхи (арахіс), Насіння кунжуту, Гречка, Пшениця."),
-    RATION_B_STOP_LOSE("Зелені овочі, М'ясо, Яйця, Молочні продукти (з низькою жирністю), Печінка І лівер."),
-    RATION_B_LOSE("Зелені овочі, М'ясо, Яйця, Молочні продукти (з низькою жирністю), Печінка І лівер, " +
-            "Настій (чай) з солодкового (лакричного) кореня."),
-    RATION_B_GAIN("Пшениця, Гречка, Настій (чай) з солодкового (лакричного) кореня."),
+    RATION_B_STOP_GAIN("dietBStopGain"),
+    RATION_B_STOP_LOSE("dietBStopLose"),
+    RATION_B_LOSE("dietBLose"),
+    RATION_B_GAIN("dietBGain"),
 
-    RATION_AB_STOP_GAIN("Червоне м'ясо, Звичайна овочева квасоля, Лімська квасоля, Насіння, Кукурудза, Гречка, Пшениця."),
-    RATION_AB_STOP_LOSE("Тофу, Морські продукти, Зелені овочі, Ананаси."),
-    RATION_AB_LOSE("Тофу, Морські продукти, Молочні продукти, Зелені овочі, Бура водорость, Ананаси."),
-    RATION_AB_GAIN("Кукурудза, Гречка, Пшениця, Молочні продукти."),
+    RATION_AB_STOP_GAIN("dietABStopGain"),
+    RATION_AB_STOP_LOSE("dietABStopLose"),
+    RATION_AB_LOSE("dietABLose"),
+    RATION_AB_GAIN("dietABGain"),
 
 
-    CALORIES_TO_MAINTAIN("Для підтримання ваги без змін Вам потрібно стільки калорій в день: "),
-    CALORIES_TO_LOSE_05("Для скидання 0.5 кг за тиждень Вам потрібно стільки калорій в день: "),
-    CALORIES_TO_LOSE_1("Для скидання 1 кг за тиждень Вам потрібно стільки калорій в день: "),
-    CALORIES_TO_GAIN_05("Для набирання 0.5 кг за тиждень Вам потрібно стільки калорій в день: "),
-    CALORIES_TO_GAIN_1("Для набирання 1 кг за тиждень Вам потрібно стільки калорій в день: ")
-    ;
+    CALORIES_TO_MAINTAIN("maintain"),
+    CALORIES_TO_LOSE_05("lose05"),
+    CALORIES_TO_LOSE_1("lose1"),
+    CALORIES_TO_GAIN_05("gain05"),
+    CALORIES_TO_GAIN_1("gain1");
     private final String testResult;
 
     TestResult(String testResult) {

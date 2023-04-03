@@ -1,7 +1,7 @@
 package com.example.healthiu.service.impl;
 
-import com.example.healthiu.entity.DoctorChatRoomRequest;
-import com.example.healthiu.entity.UserChatRoomRequest;
+import com.example.healthiu.entity.table.DoctorChatRoomRequest;
+import com.example.healthiu.entity.table.UserChatRoomRequest;
 import com.example.healthiu.repository.DoctorChatRoomRequestRepository;
 import com.example.healthiu.repository.UserChatRoomRequestRepository;
 import com.example.healthiu.service.ChatRoomRequestService;
@@ -12,11 +12,15 @@ import java.util.List;
 
 @Service("requestChatRoomService")
 public class ChatRoomRequestServiceImpl implements ChatRoomRequestService {
-    @Autowired
-    private UserChatRoomRequestRepository userChatRoomRequestRepository;
+    private final UserChatRoomRequestRepository userChatRoomRequestRepository;
+
+    private final DoctorChatRoomRequestRepository doctorChatRoomRequestRepository;
 
     @Autowired
-    private DoctorChatRoomRequestRepository doctorChatRoomRequestRepository;
+    public ChatRoomRequestServiceImpl(UserChatRoomRequestRepository userChatRoomRequestRepository, DoctorChatRoomRequestRepository doctorChatRoomRequestRepository) {
+        this.userChatRoomRequestRepository = userChatRoomRequestRepository;
+        this.doctorChatRoomRequestRepository = doctorChatRoomRequestRepository;
+    }
 
     @Override
     public boolean checkIfUserChatRoomRequestExists(String userLogin) {

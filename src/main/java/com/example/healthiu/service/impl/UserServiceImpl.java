@@ -1,42 +1,37 @@
 package com.example.healthiu.service.impl;
 
 import com.example.healthiu.entity.Role;
-import com.example.healthiu.entity.User;
 import com.example.healthiu.entity.UserData;
+import com.example.healthiu.entity.table.User;
 import com.example.healthiu.repository.UserRepository;
 import com.example.healthiu.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public void register(UserData user) {
-        registerUserTemplate(user, Role.USER.toString());
+        registerUser(user, Role.USER.toString());
     }
 
     @Override
     public void register(UserData user, String role) {
-        registerUserTemplate(user, role);
+        registerUser(user, role);
+    }
+
+    @Override
+    public boolean checkUserLoginAndPassword(String login, String password) {
+        User user = userRepository.findUserByLogin(login);
+        return (user != null && login.equals(user.getLogin()) && password.equals(user.getPassword()));
     }
 
     @Override
@@ -87,16 +82,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void loginNewUser(UserData userData, HttpServletRequest req) {
-        loginUserTemplate(userData, req, Role.USER.toString());
-    }
-
-    @Override
-    public void loginNewUser(UserData userData, HttpServletRequest req, String role) {
-        loginUserTemplate(userData, req, role);
-    }
-
-    @Override
     public User findUserByLogin(String login) {
         return userRepository.findUserByLogin(login);
     }
@@ -108,20 +93,7 @@ public class UserServiceImpl implements UserService {
 
 
     //TEMPORARY TEMPLATES
-
-    private void loginUserTemplate(UserData userData, HttpServletRequest req, String role) {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(role));
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                userData.getLogin(), userData.getPassword(), authorities
-        );
-        SecurityContext sc = SecurityContextHolder.getContext();
-        sc.setAuthentication(authentication);
-        HttpSession session = req.getSession(true);
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
-    }
-
-    private void registerUserTemplate(UserData user, String role) {
+    private void registerUser(UserData user, String role) {
         User userEntity = new User();
         BeanUtils.copyProperties(user, userEntity);
         userEntity.setRole(role);

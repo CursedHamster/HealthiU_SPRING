@@ -1,10 +1,9 @@
-package com.example.healthiu.rest;
+package com.example.healthiu.controller;
 
-import com.example.healthiu.entity.DoctorChatRoomRequest;
-import com.example.healthiu.entity.UserChatRoomRequest;
+import com.example.healthiu.entity.table.DoctorChatRoomRequest;
+import com.example.healthiu.entity.table.UserChatRoomRequest;
 import com.example.healthiu.service.ChatRoomRequestService;
 import com.example.healthiu.service.ChatRoomService;
-import com.example.healthiu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,18 +16,18 @@ import java.util.Map;
 import static org.springframework.http.ResponseEntity.ok;
 
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/admin-messages")
 public class AdminMessagesController {
-    @Autowired
-    UserService userService;
+    private final ChatRoomService chatRoomService;
+    private final ChatRoomRequestService chatRoomRequestService;
 
     @Autowired
-    private ChatRoomService chatRoomService;
+    public AdminMessagesController(ChatRoomService chatRoomService, ChatRoomRequestService chatRoomRequestService) {
+        this.chatRoomService = chatRoomService;
+        this.chatRoomRequestService = chatRoomRequestService;
+    }
 
-    @Autowired
-    private ChatRoomRequestService chatRoomRequestService;
 
     @GetMapping("/requests")
     public ResponseEntity<Map<String, Object>> getChatRoomRequests() {

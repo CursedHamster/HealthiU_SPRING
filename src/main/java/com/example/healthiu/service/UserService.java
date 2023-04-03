@@ -1,15 +1,15 @@
 package com.example.healthiu.service;
 
-import com.example.healthiu.entity.User;
+import com.example.healthiu.entity.table.User;
 import com.example.healthiu.entity.UserData;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 public interface UserService {
     void register(UserData user);
 
     void register(UserData user, String role);
+
+    boolean checkUserLoginAndPassword(String login, String password);
 
     int checkChangesCount(UserData userData);
 
@@ -18,10 +18,6 @@ public interface UserService {
     boolean checkIfUserExist(String email);
 
     boolean checkIfEmailExists(String email);
-
-    void loginNewUser(UserData userData, HttpServletRequest req);
-
-    void loginNewUser(UserData userData, HttpServletRequest req, String role);
 
     User findUserByLogin(String login);
 

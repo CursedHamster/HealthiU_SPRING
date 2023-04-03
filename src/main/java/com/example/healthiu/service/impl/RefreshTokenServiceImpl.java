@@ -1,11 +1,7 @@
 package com.example.healthiu.service.impl;
 
-import com.example.healthiu.entity.DoctorChatRoomRequest;
 import com.example.healthiu.entity.RefreshTokenRequest;
-import com.example.healthiu.entity.UserChatRoomRequest;
-import com.example.healthiu.repository.DoctorChatRoomRequestRepository;
 import com.example.healthiu.repository.RefreshTokenRequestRepository;
-import com.example.healthiu.repository.UserChatRoomRequestRepository;
 import com.example.healthiu.service.RefreshTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +11,12 @@ import java.util.Objects;
 
 @Service("refreshTokenService")
 public class RefreshTokenServiceImpl implements RefreshTokenService {
+    private final RefreshTokenRequestRepository refreshTokenRequestRepository;
+
     @Autowired
-    private RefreshTokenRequestRepository refreshTokenRequestRepository;
+    public RefreshTokenServiceImpl(RefreshTokenRequestRepository refreshTokenRequestRepository) {
+        this.refreshTokenRequestRepository = refreshTokenRequestRepository;
+    }
 
     @Override
     public boolean checkIfRefreshTokenExists(String username) {
@@ -25,7 +25,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public boolean checkIfRefreshTokenIsRight(String username, String refreshToken) {
-        return Objects.equals(refreshTokenRequestRepository.findById(username).get().getRefreshToken(), refreshToken);
+        boolean present = refreshTokenRequestRepository.findById(username).isPresent();
+        if (present) {
+            return Objects.equals(refreshTokenRequestRepository.findById(username).get().getRefreshToken(), refreshToken);
+        }
+        return false;
     }
 
     @Override

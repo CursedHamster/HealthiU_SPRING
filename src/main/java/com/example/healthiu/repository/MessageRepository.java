@@ -1,6 +1,6 @@
 package com.example.healthiu.repository;
 
-import com.example.healthiu.entity.Message;
+import com.example.healthiu.entity.table.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

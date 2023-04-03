@@ -1,18 +1,27 @@
 package com.example.healthiu.service.impl;
 
 import com.example.healthiu.entity.*;
+import com.example.healthiu.entity.table.Test;
 import com.example.healthiu.repository.TestRepository;
 import com.example.healthiu.service.TestService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service("testService")
 public class TestServiceImpl implements TestService {
+
+    private final TestRepository testRepository;
+
     @Autowired
-    private TestRepository testRepository;
+    public TestServiceImpl(TestRepository testRepository) {
+        this.testRepository = testRepository;
+    }
 
     @Override
     public boolean checkIfTestExistsByUserLogin(String userLogin) {
@@ -40,9 +49,9 @@ public class TestServiceImpl implements TestService {
                 if (chestToWaistRatioCo == 1) {
                     if (bmiCo <= 2) {
                         testResult = TestResult.OBESE.getTestResult();
-                    } else if (bmiCo <= 3) {
+                    } else if (bmiCo == 3) {
                         testResult = TestResult.EXTREMELY_OBESE.getTestResult();
-                    } else if (bmiCo <= 4) {
+                    } else if (bmiCo == 4) {
                         testResult = TestResult.MORBIDLY_OBESE.getTestResult();
                     }
                 } else {
@@ -69,7 +78,7 @@ public class TestServiceImpl implements TestService {
                     if (chestToWaistRatioCo == 1) {
                         if (bmiCo <= 1) {
                             testResult = TestResult.OVERWEIGHT.getTestResult();
-                        } else if (bmiCo <= 2) {
+                        } else if (bmiCo == 2) {
                             testResult = TestResult.OBESE.getTestResult();
                         } else {
                             testResult = TestResult.EXTREMELY_OBESE.getTestResult();
@@ -77,9 +86,9 @@ public class TestServiceImpl implements TestService {
                     } else {
                         if (bmiCo <= 0) {
                             testResult = TestResult.NORMAL.getTestResult();
-                        } else if (bmiCo <= 1) {
+                        } else if (bmiCo == 1) {
                             testResult = TestResult.OVERWEIGHT.getTestResult();
-                        } else if (bmiCo <= 2) {
+                        } else if (bmiCo == 2) {
                             testResult = TestResult.OBESE.getTestResult();
                         } else {
                             testResult = TestResult.EXTREMELY_OBESE.getTestResult();
@@ -185,8 +194,8 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<String> calculateCalories(TestData testData) {
-        List<String> calories = new ArrayList<>();
+    public Map<String, Double> calculateCalories(TestData testData) {
+        Map<String, Double> calories = new HashMap<>();
         double kgInCal = 7000;
         double baseCalorieCalculation = 10 * testData.getWeight() + 6.25 * testData.getHeight() - 5 * testData.getAge();
         double caloriesToMaintain = (testData.getGender().equals(Gender.MALE.getGender())) ?
@@ -197,18 +206,18 @@ public class TestServiceImpl implements TestService {
         double caloriesToGain1Kg = caloriesToMaintain + kgInCal / 7;
 
         if (testData.getTestResult().equals(TestResult.UNDERWEIGHT.getTestResult())) {
-            calories.add(TestResult.CALORIES_TO_MAINTAIN.getTestResult() + String.format("%.1f", caloriesToMaintain));
-            calories.add(TestResult.CALORIES_TO_GAIN_05.getTestResult() + String.format("%.1f", caloriesToGain05Kg));
-            calories.add(TestResult.CALORIES_TO_GAIN_1.getTestResult() + String.format("%.1f", caloriesToGain1Kg));
+            calories.put(TestResult.CALORIES_TO_MAINTAIN.getTestResult(), caloriesToMaintain);
+            calories.put(TestResult.CALORIES_TO_GAIN_05.getTestResult(), caloriesToGain05Kg);
+            calories.put(TestResult.CALORIES_TO_GAIN_1.getTestResult(), caloriesToGain1Kg);
         } else if (testData.getTestResult().equals(TestResult.NORMAL.getTestResult())) {
-            calories.add(TestResult.CALORIES_TO_MAINTAIN.getTestResult() + String.format("%.1f", caloriesToMaintain));
+            calories.put(TestResult.CALORIES_TO_MAINTAIN.getTestResult(), caloriesToMaintain);
         } else if (testData.getTestResult().equals(TestResult.OVERWEIGHT.getTestResult())) {
-            calories.add(TestResult.CALORIES_TO_MAINTAIN.getTestResult() + String.format("%.1f", caloriesToMaintain));
-            calories.add(TestResult.CALORIES_TO_LOSE_05.getTestResult() + String.format("%.1f", caloriesToLose05Kg));
+            calories.put(TestResult.CALORIES_TO_MAINTAIN.getTestResult(), caloriesToMaintain);
+            calories.put(TestResult.CALORIES_TO_LOSE_05.getTestResult(), caloriesToLose05Kg);
         } else {
-            calories.add(TestResult.CALORIES_TO_MAINTAIN.getTestResult() + String.format("%.1f", caloriesToMaintain));
-            calories.add(TestResult.CALORIES_TO_LOSE_05.getTestResult() + String.format("%.1f", caloriesToLose05Kg));
-            calories.add(TestResult.CALORIES_TO_LOSE_1.getTestResult() + String.format("%.1f", caloriesToLose1Kg));
+            calories.put(TestResult.CALORIES_TO_MAINTAIN.getTestResult(), caloriesToMaintain);
+            calories.put(TestResult.CALORIES_TO_LOSE_05.getTestResult(), caloriesToLose05Kg);
+            calories.put(TestResult.CALORIES_TO_LOSE_1.getTestResult(), caloriesToLose1Kg);
         }
 
         return calories;
@@ -217,6 +226,7 @@ public class TestServiceImpl implements TestService {
     @Override
     public void saveTest(TestData testData, String userLogin) {
         try {
+            String caloriesString = new Gson().toJson(testData.getCalories());
             Test test = new Test(userLogin,
                     testData.getGender(),
                     testData.getAge(),
@@ -227,7 +237,10 @@ public class TestServiceImpl implements TestService {
                     testData.getHipSize(),
                     testData.getBloodType(),
                     testData.getTestResult(),
-                    testData.getBmi());
+                    testData.getBmi(),
+                    testData.getGoodProducts(),
+                    testData.getBadProducts(),
+                    caloriesString);
             testRepository.save(test);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -239,6 +252,27 @@ public class TestServiceImpl implements TestService {
         return testRepository.findTestByUserLogin(login);
     }
 
+    @Override
+    public TestData castTestToTestData(Test test) {
+        Type empMapType = new TypeToken<Map<String, Double>>() {
+        }.getType();
+        Map<String, Double> caloriesMap = new Gson().fromJson(test.getCalories(), empMapType);
+        return new TestData(
+                test.getGender(),
+                test.getAge(),
+                test.getHeight(),
+                test.getWeight(),
+                test.getChestSize(),
+                test.getWaistSize(),
+                test.getHipSize(),
+                test.getBloodType(),
+                test.getTestResult(),
+                test.getBmi(),
+                test.getGoodProducts(),
+                test.getBadProducts(),
+                caloriesMap
+        );
+    }
 
 
     /////////////////// CALCULATIONS

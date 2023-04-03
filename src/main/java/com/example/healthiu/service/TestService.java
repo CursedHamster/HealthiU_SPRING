@@ -1,10 +1,10 @@
 package com.example.healthiu.service;
 
 import com.example.healthiu.entity.BloodType;
-import com.example.healthiu.entity.Test;
+import com.example.healthiu.entity.table.Test;
 import com.example.healthiu.entity.TestData;
 
-import java.util.List;
+import java.util.Map;
 
 public interface TestService {
     boolean checkIfTestExistsByUserLogin(String userLogin);
@@ -17,9 +17,11 @@ public interface TestService {
 
     String calculateGoodRation(BloodType bloodType, String testResult);
 
-    List<String> calculateCalories(TestData testData);
+    Map<String, Double> calculateCalories(TestData testData);
 
     void saveTest(TestData testData, String userLogin);
 
     Test findTestByLogin(String login);
+
+    TestData castTestToTestData(Test test);
 }

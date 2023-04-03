@@ -1,28 +1,22 @@
 package com.example.healthiu.service.impl;
 
-import com.example.healthiu.entity.ChatRoom;
-import com.example.healthiu.entity.DoctorChatRoomRequest;
-import com.example.healthiu.entity.UserChatRoomRequest;
+import com.example.healthiu.entity.table.ChatRoom;
+import com.example.healthiu.entity.table.DoctorChatRoomRequest;
+import com.example.healthiu.entity.table.UserChatRoomRequest;
 import com.example.healthiu.repository.ChatRoomRepository;
 import com.example.healthiu.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("chatRoomService")
 public class ChatRoomServiceImpl implements ChatRoomService {
-    @Autowired
-    private ChatRoomRepository chatRoomRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
-    @Override
-    public String findRecipientLoginForChatInit(String senderLogin) {
-        String recipientLogin = null;
-        if (chatRoomRepository.findByUserLogin(senderLogin).isPresent()) {
-            recipientLogin = chatRoomRepository.findChatRoomByUserLogin(senderLogin).getDoctorLogin();
-        }
-        return recipientLogin;
+    @Autowired
+    public ChatRoomServiceImpl(ChatRoomRepository chatRoomRepository) {
+        this.chatRoomRepository = chatRoomRepository;
     }
 
     @Override
