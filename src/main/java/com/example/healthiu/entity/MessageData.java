@@ -2,9 +2,7 @@ package com.example.healthiu.entity;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 
 @Data

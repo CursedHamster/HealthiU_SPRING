@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'
+        'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+    <meta charset='UTF-8'>
+    <meta content='width=device-width, initial-scale=1' name='viewport'>
+    <meta name='x-apple-disable-message-reformatting'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta content='telephone=no' name='format-detection'>
+    <title></title>
+    <link href='https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap'
+          rel='stylesheet'>
+    <style type="text/css">
+        * {
+            box-sizing: border-box;
+            font-family: 'Mulish', sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            background: rgb(255, 255, 255);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem 3rem;
+            border-radius: 2rem;
+            -webkit-border-radius: 2rem;
+            -moz-border-radius: 2rem;
+            -ms-border-radius: 2rem;
+            -o-border-radius: 2rem;
+        }
+
+        .container .image {
+            flex-grow: 0;
+            flex-shrink: 0;
+            max-width: 100%;
+            max-height: 150px;
+            object-fit: contain;
+        }
+
+        .container h1 {
+            color: #072217;
+            margin-bottom: 0;
+            font-weight: 400;
+        }
+
+        .container .button {
+            display: block;
+            width: fit-content;
+            border: none;
+            color: white;
+            background: #6DA33A;
+            padding: 0.5em 2em;
+            border-radius: 3em;
+            -webkit-border-radius: 3em;
+            -moz-border-radius: 3em;
+            -ms-border-radius: 3em;
+            -o-border-radius: 3em;
+            font-size: 1.2rem;
+            margin: 0 auto 1.5rem;
+            text-decoration: none;
+        }
+
+        p {
+            line-height: 1.5;
+            color: #1A2424;
+        }
+
+        .container .gray {
+            color: #4a564d;
+            font-size: .9rem;
+            margin: 0;
+        }
+
+        .container .gray a {
+            color: #244f48;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .container .logo {
+            max-width: 30px;
+            margin-top: 2rem;
+        }
+
+        @media screen and (max-width: 600px) {
+            body {
+                font-size: 14px;
+                padding: .1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div style="padding:1rem 2rem;background-color: #d4d8d7ce">
+    <table class='container'>
+        <tr>
+            <td><img class='image'
+                     src='https://firebasestorage.googleapis.com/v0/b/healthiu-base.appspot.com/o/email%2Femail_letter.png?alt=media&token=400e8220-31fb-438a-a110-b52c18e273b2'
+                     alt='email verification'></td>
+        </tr>
+        <tr>
+            <td>
+                <h1>Підтвердьте свою пошту</h1>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Будь ласка, підтвердьте, що це ваш правильний електронна пошта. Якщо ви не реєструвалися на
+                    HealthiU, проігноруйте цей лист і уникайте натискання на будь-які кнопки або посилання.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a class="button" th:href="@{${verificationUrl}}">
+                    Підтвердьте пошту
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="gray">Наша пошта для зв'язку: <a
+                        href='mailto:healthiu.mail@gmail.com'>healthiu.mail@gmail.com</a>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="gray">Copyright @ 2023 <a th:href="@{${websiteUrl}}">HealthiU</a></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <img class='logo'
+                     src='https://firebasestorage.googleapis.com/v0/b/healthiu-base.appspot.com/o/email%2Flogo.png?alt=media&token=223f3b03-431f-450c-b7a5-5c5106d831e2'
+                     alt='HealthiU logo'>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

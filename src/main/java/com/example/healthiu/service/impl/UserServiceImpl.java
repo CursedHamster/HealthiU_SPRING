@@ -19,19 +19,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void register(UserData user) {
-        registerUser(user, Role.USER.toString());
+    public User register(UserData user) {
+        return registerUser(user, Role.USER.toString());
     }
 
     @Override
-    public void register(UserData user, String role) {
-        registerUser(user, role);
+    public User register(UserData user, String role) {
+        return registerUser(user, role);
+    }
+
+    @Override
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override
     public boolean checkUserLoginAndPassword(String login, String password) {
         User user = userRepository.findUserByLogin(login);
         return (user != null && login.equals(user.getLogin()) && password.equals(user.getPassword()));
+    }
+
+    @Override
+    public boolean checkIfEnabled(String login) {
+        User user = userRepository.findUserByLogin(login);
+        return (user != null && user.isEnabled());
     }
 
     @Override
@@ -92,11 +103,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    //TEMPORARY TEMPLATES
-    private void registerUser(UserData user, String role) {
+    private User registerUser(UserData user, String role) {
         User userEntity = new User();
         BeanUtils.copyProperties(user, userEntity);
         userEntity.setRole(role);
-        userRepository.save(userEntity);
+        return userRepository.save(userEntity);
     }
 }

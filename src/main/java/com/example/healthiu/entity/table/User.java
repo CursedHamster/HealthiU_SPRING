@@ -3,10 +3,7 @@ package com.example.healthiu.entity.table;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
 
@@ -33,6 +30,8 @@ public class User {
 
     @Column
     private String role;
+    @Column
+    private boolean enabled = false;
 
     @Override
     public boolean equals(Object o) {

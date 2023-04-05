@@ -4,7 +4,7 @@ import com.example.healthiu.entity.MessageStatus;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Objects;
