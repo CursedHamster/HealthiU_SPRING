@@ -4,10 +4,12 @@ import com.example.healthiu.entity.UserData;
 import com.example.healthiu.entity.table.User;
 import com.example.healthiu.security.JwtTokenProvider;
 import com.example.healthiu.service.UserService;
+import com.example.healthiu.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 
@@ -20,10 +22,13 @@ public class UserController {
 
     JwtTokenProvider jwtTokenProvider;
 
+    StorageService storageService;
+
     @Autowired
-    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider) {
+    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, StorageService storageService) {
         this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.storageService = storageService;
     }
 
     @GetMapping
@@ -61,5 +66,17 @@ public class UserController {
         userService.updateUserInfo(userData);
         User user = userService.findUserByLogin(userData.getLogin());
         return ok(user);
+    }
+
+    @PostMapping(value = "/change-picture", consumes = "multipart/form-data")
+    public String changeProfilePicture(@RequestParam(name = "file") MultipartFile file) {
+        System.out.println("started meow");
+        try {
+            storageService.initializeFirebase();
+            System.out.println(storageService.uploadFile(file));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return "meow";
     }
 }

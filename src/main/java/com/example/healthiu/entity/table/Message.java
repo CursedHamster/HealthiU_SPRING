@@ -19,11 +19,19 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String senderLogin;
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "senderLogin")
+    private User sender;
 
-    @Column
-    private String recipientLogin;
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "recipientLogin")
+    private User recipient;
+
+//    @Column
+//    private String senderLogin;
+//
+//    @Column
+//    private String recipientLogin;
 
     @Column
     private String content;
@@ -34,17 +42,12 @@ public class Message {
     @Column
     private String status;
 
-    public Message(String senderLogin, String recipientId, String content) {
-        this.senderLogin = senderLogin;
-        this.recipientLogin = recipientId;
+    public Message(User sender, User recipient, String content) {
+        this.sender = sender;
+        this.recipient = recipient;
         this.content = content;
         this.timestamp = new Timestamp(new Date().getTime());
         this.status = MessageStatus.UNREAD.toString();
-    }
-
-    @Override
-    public String toString() {
-        return "Message [from=" + senderLogin + ", to=" + recipientLogin + ", message=" + content + "]";
     }
 
     @Override

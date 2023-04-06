@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import jakarta.persistence.*;
+
 import java.util.Objects;
 
 @Entity
@@ -17,24 +18,23 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String userLogin;
-    @Column
-    private String userColor;
+    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "userLogin")
+    private User user;
 
-    @Column
-    private String doctorLogin;
-
-    @Column
-    private String doctorColor;
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "doctorLogin")
+    private User doctor;
+//    @Column
+//    private String userLogin;
+//    @Column
+//    private String doctorLogin;
 
     private Long unreadMessagesCount;
 
-    public ChatRoom(String userLogin, String userColor, String doctorLogin, String doctorColor) {
-        this.userLogin = userLogin;
-        this.userColor = userColor;
-        this.doctorLogin = doctorLogin;
-        this.doctorColor = doctorColor;
+    public ChatRoom(User user, User doctor) {
+        this.user = user;
+        this.doctor = doctor;
     }
 
     @Override

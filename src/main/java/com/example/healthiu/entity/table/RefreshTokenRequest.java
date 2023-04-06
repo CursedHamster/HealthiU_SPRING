@@ -1,4 +1,4 @@
-package com.example.healthiu.entity;
+package com.example.healthiu.entity.table;
 
 import lombok.*;
 import org.hibernate.Hibernate;

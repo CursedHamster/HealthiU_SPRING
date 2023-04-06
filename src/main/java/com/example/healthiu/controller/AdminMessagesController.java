@@ -4,6 +4,7 @@ import com.example.healthiu.entity.table.DoctorChatRoomRequest;
 import com.example.healthiu.entity.table.UserChatRoomRequest;
 import com.example.healthiu.service.ChatRoomRequestService;
 import com.example.healthiu.service.ChatRoomService;
+import com.example.healthiu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,13 @@ import static org.springframework.http.ResponseEntity.ok;
 public class AdminMessagesController {
     private final ChatRoomService chatRoomService;
     private final ChatRoomRequestService chatRoomRequestService;
+    private final UserService userService;
 
     @Autowired
-    public AdminMessagesController(ChatRoomService chatRoomService, ChatRoomRequestService chatRoomRequestService) {
+    public AdminMessagesController(ChatRoomService chatRoomService, ChatRoomRequestService chatRoomRequestService, UserService userService) {
         this.chatRoomService = chatRoomService;
         this.chatRoomRequestService = chatRoomRequestService;
+        this.userService = userService;
     }
 
 
@@ -40,18 +43,18 @@ public class AdminMessagesController {
     }
 
     @PostMapping("/add-chatroom")
-    public ResponseEntity<Boolean> addChatRoom(@RequestBody Map<String, Map<String, String>> chatRoomRequests) {
-        Map<String, String> user = chatRoomRequests.get("user");
-        Map<String, String> doctor = chatRoomRequests.get("doctor");
-        UserChatRoomRequest userChatRoomRequest = new UserChatRoomRequest(user.get("userLogin"), user.get("color"));
-        DoctorChatRoomRequest doctorChatRoomRequest = new DoctorChatRoomRequest(doctor.get("doctorLogin"), doctor.get("color"));
-        if (chatRoomRequestService.checkIfUserChatRoomRequestExists(userChatRoomRequest.getUserLogin())
-                && chatRoomRequestService.checkIfDoctorChatRoomRequestExists(doctorChatRoomRequest.getDoctorLogin())) {
-            if (chatRoomService.checkIfChatRoomExists(userChatRoomRequest.getUserLogin())) {
+    public ResponseEntity<Boolean> addChatRoom(@RequestBody Map<String, String> chatRoomRequests) {
+        String user = chatRoomRequests.get("user");
+        String doctor = chatRoomRequests.get("doctor");
+        UserChatRoomRequest userChatRoomRequest = new UserChatRoomRequest(userService.findUserByLogin(user));
+        DoctorChatRoomRequest doctorChatRoomRequest = new DoctorChatRoomRequest(userService.findUserByLogin(doctor));
+        if (chatRoomRequestService.checkIfUserChatRoomRequestExists(userChatRoomRequest.getUser().getLogin())
+                && chatRoomRequestService.checkIfDoctorChatRoomRequestExists(doctorChatRoomRequest.getDoctor().getLogin())) {
+            if (chatRoomService.checkIfChatRoomExists(userChatRoomRequest.getUser().getLogin())) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
             chatRoomService.addNewChatRoom(userChatRoomRequest, doctorChatRoomRequest);
-            chatRoomRequestService.removeUserChatRoomRequest(userChatRoomRequest.getUserLogin());
+            chatRoomRequestService.removeUserChatRoomRequest(userChatRoomRequest.getUser().getLogin());
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

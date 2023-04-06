@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import jakarta.persistence.*;
+
 import java.sql.Date;
 import java.util.Objects;
 
@@ -30,6 +31,8 @@ public class User {
 
     @Column
     private String role;
+    @Column
+    private String imgUrl;
     @Column
     private boolean enabled = false;
 

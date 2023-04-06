@@ -4,6 +4,7 @@ import com.example.healthiu.entity.MessageStatus;
 import com.example.healthiu.entity.Role;
 import com.example.healthiu.entity.table.ChatRoom;
 import com.example.healthiu.entity.table.Message;
+import com.example.healthiu.entity.table.User;
 import com.example.healthiu.service.ChatRoomRequestService;
 import com.example.healthiu.service.ChatRoomService;
 import com.example.healthiu.service.MessageService;
@@ -49,21 +50,21 @@ public class ChatRoomController {
 
 
     @PostMapping("/request-chatroom")
-    public ResponseEntity<Boolean> requestChatroom(@RequestParam(name = "login") String login, @RequestParam(name = "color") String color) {
-        String role = userService.findUserByLogin(login).getRole();
-        if (Objects.equals(role, Role.USER.toString())) {
+    public ResponseEntity<Boolean> requestChatroom(@RequestParam(name = "login") String login) {
+        User user = userService.findUserByLogin(login);
+        if (Objects.equals(user.getRole(), Role.USER.toString())) {
             if (chatRoomRequestService.checkIfUserChatRoomRequestExists(login)) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             if (chatRoomService.checkIfChatRoomExists(login)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            chatRoomRequestService.addNewUserChatRoomRequest(login, color);
+            chatRoomRequestService.addNewUserChatRoomRequest(user);
         } else {
             if (chatRoomRequestService.checkIfDoctorChatRoomRequestExists(login)) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-            chatRoomRequestService.addNewDoctorChatRoomRequest(login, color);
+            chatRoomRequestService.addNewDoctorChatRoomRequest(user);
         }
         return ok(true);
     }
@@ -98,9 +99,10 @@ public class ChatRoomController {
         chatRoomList = chatRoomList
                 .stream().peek(
                         chatRoom -> chatRoom.setUnreadMessagesCount(
-                                messageService.findAllMessagesByLogins(chatRoom.getUserLogin(), chatRoom.getDoctorLogin())
+                                messageService.findAllMessagesByLogins(chatRoom.getUser().getLogin(),
+                                                chatRoom.getDoctor().getLogin())
                                         .stream().filter(
-                                                message -> message.getRecipientLogin().equals(login)
+                                                message -> message.getRecipient().getLogin().equals(login)
                                                         && message.getStatus().equals(MessageStatus.UNREAD.toString())).count()
                         )
                 )
@@ -110,7 +112,8 @@ public class ChatRoomController {
     }
 
     @GetMapping("/messages")
-    public ResponseEntity<List<Message>> getMessages(@RequestParam(name = "login") String login, @RequestParam(name = "companion") String companion) {
+    public ResponseEntity<List<Message>> getMessages(@RequestParam(name = "login") String login,
+                                                         @RequestParam(name = "companion") String companion) {
         return ok(messageService.findAllMessagesByLogins(login, companion));
     }
 

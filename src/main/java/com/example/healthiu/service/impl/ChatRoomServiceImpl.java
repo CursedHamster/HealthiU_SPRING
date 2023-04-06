@@ -36,8 +36,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public void addNewChatRoom(UserChatRoomRequest userChatRoomRequest, DoctorChatRoomRequest doctorChatRoomRequest) {
-        ChatRoom chatRoom = new ChatRoom(userChatRoomRequest.getUserLogin(), userChatRoomRequest.getColor(),
-                doctorChatRoomRequest.getDoctorLogin(), doctorChatRoomRequest.getColor());
+        ChatRoom chatRoom = new ChatRoom(userChatRoomRequest.getUser(), doctorChatRoomRequest.getDoctor());
         chatRoomRepository.save(chatRoom);
     }
 

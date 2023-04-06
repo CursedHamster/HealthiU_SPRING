@@ -3,6 +3,7 @@ package com.example.healthiu.controller;
 import com.example.healthiu.entity.MessageData;
 import com.example.healthiu.entity.table.Message;
 import com.example.healthiu.service.MessageService;
+import com.example.healthiu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MessageController {
     private final MessageService messageService;
+    private final UserService userService;
 
     @Autowired
-    public MessageController(MessageService messageService) {
+    public MessageController(MessageService messageService, UserService userService) {
         this.messageService = messageService;
+        this.userService = userService;
     }
 
     @MessageMapping("/message/{senderLogin}/{recipientLogin}")
@@ -28,8 +31,9 @@ public class MessageController {
         if (senderLogin.equals(messageData.getSenderLogin()) && recipientLogin.equals(messageData.getRecipientLogin())
                 && messageData.getContent() != null) {
             return messageService.addNewMessage(
-                    messageData.getSenderLogin(), messageData.getRecipientLogin(), messageData.getContent()
-            );
+                    userService.findUserByLogin(messageData.getSenderLogin()),
+                    userService.findUserByLogin(messageData.getRecipientLogin()),
+                    messageData.getContent());
         }
         return new Message();
     }

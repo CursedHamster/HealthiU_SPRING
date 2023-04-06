@@ -1,6 +1,8 @@
 package com.example.healthiu.service;
 
+import com.example.healthiu.entity.MessageData;
 import com.example.healthiu.entity.table.Message;
+import com.example.healthiu.entity.table.User;
 
 import java.util.List;
 
@@ -10,7 +12,11 @@ public interface MessageService {
 
     List<Message> findAllMessagesByLogins(String login, String companion);
 
-    Message addNewMessage(String senderLogin, String recipientId, String content);
+    List<MessageData> convertMessageListToMessageDataList(List<Message> messageList);
+
+    Message addNewMessage(User sender, User recipient, String content);
+
+    MessageData convertMessageToMessageData(Message message);
 
     Message findMessageById(Long id);
 

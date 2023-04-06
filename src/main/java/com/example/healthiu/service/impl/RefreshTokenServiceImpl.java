@@ -1,6 +1,6 @@
 package com.example.healthiu.service.impl;
 
-import com.example.healthiu.entity.RefreshTokenRequest;
+import com.example.healthiu.entity.table.RefreshTokenRequest;
 import com.example.healthiu.repository.RefreshTokenRequestRepository;
 import com.example.healthiu.service.RefreshTokenService;
 import org.springframework.beans.factory.annotation.Autowired;

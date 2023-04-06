@@ -1,6 +1,7 @@
 package com.example.healthiu.service;
 
 import com.example.healthiu.entity.table.DoctorChatRoomRequest;
+import com.example.healthiu.entity.table.User;
 import com.example.healthiu.entity.table.UserChatRoomRequest;
 
 import java.util.List;
@@ -14,9 +15,9 @@ public interface ChatRoomRequestService {
 
     List<DoctorChatRoomRequest> findAllDoctorChatRoomRequests();
 
-    void addNewUserChatRoomRequest(String login, String color);
+    void addNewUserChatRoomRequest(User user);
 
-    void addNewDoctorChatRoomRequest(String login, String color);
+    void addNewDoctorChatRoomRequest(User doctor);
 
     void removeUserChatRoomRequest(String login);
 

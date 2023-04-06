@@ -1,12 +1,20 @@
 package com.example.healthiu.entity;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MessageData implements Serializable {
+    private Long id;
     @NotNull
     @NotEmpty
     @NotBlank
@@ -17,4 +25,14 @@ public class MessageData implements Serializable {
 
     @NotNull
     private String recipientLogin;
+
+    private Timestamp timestamp;
+
+    private String status;
+
+    public MessageData(String content, String senderLogin, String recipientLogin) {
+        this.content = content;
+        this.senderLogin = senderLogin;
+        this.recipientLogin = recipientLogin;
+    }
 }

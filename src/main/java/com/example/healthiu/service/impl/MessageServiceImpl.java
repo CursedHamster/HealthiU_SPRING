@@ -1,7 +1,9 @@
 package com.example.healthiu.service.impl;
 
+import com.example.healthiu.entity.MessageData;
 import com.example.healthiu.entity.MessageStatus;
 import com.example.healthiu.entity.table.Message;
+import com.example.healthiu.entity.table.User;
 import com.example.healthiu.repository.MessageRepository;
 import com.example.healthiu.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +41,25 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Message addNewMessage(String senderLogin, String recipientId, String content) {
-        Message message = new Message(senderLogin, recipientId, content);
+    public List<MessageData> convertMessageListToMessageDataList(List<Message> messageList) {
+        List<MessageData> messageDataList = new ArrayList<>();
+        for (Message message : messageList) {
+            messageDataList.add(convertMessageToMessageData(message));
+        }
+        return messageDataList;
+    }
+
+    @Override
+    public Message addNewMessage(User sender, User recipient, String content) {
+        Message message = new Message(sender, recipient, content);
         messageRepository.save(message);
         return message;
+    }
+
+    @Override
+    public MessageData convertMessageToMessageData(Message message) {
+        return new MessageData(message.getId(), message.getContent(), message.getSender().getLogin(),
+                message.getRecipient().getLogin(), message.getTimestamp(), message.getStatus());
     }
 
     @Override

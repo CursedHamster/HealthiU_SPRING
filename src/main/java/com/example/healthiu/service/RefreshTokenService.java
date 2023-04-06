@@ -1,6 +1,6 @@
 package com.example.healthiu.service;
 
-import com.example.healthiu.entity.RefreshTokenRequest;
+import com.example.healthiu.entity.table.RefreshTokenRequest;
 
 import java.util.List;
 

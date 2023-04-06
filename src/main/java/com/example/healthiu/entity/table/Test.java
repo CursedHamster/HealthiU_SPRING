@@ -1,9 +1,9 @@
 package com.example.healthiu.entity.table;
 
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -15,7 +15,11 @@ import java.util.Objects;
 @AllArgsConstructor
 public class Test {
     @Id
-    private String userLogin;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "login")
+    private User user;
 
     @Column
     private String gender;
@@ -55,12 +59,41 @@ public class Test {
     @Column
     private String calories;
 
+    public Test(User user, String gender, int age, double height, double weight, double chestSize, double waistSize, double hipSize, String bloodType) {
+        this.user = user;
+        this.gender = gender;
+        this.age = age;
+        this.height = height;
+        this.weight = weight;
+        this.chestSize = chestSize;
+        this.waistSize = waistSize;
+        this.hipSize = hipSize;
+        this.bloodType = bloodType;
+    }
+
+    public Test(User user, String gender, int age, double height, double weight, double chestSize, double waistSize, double hipSize, String bloodType, String testResult, double bmi, String goodProducts, String badProducts, String calories) {
+        this.user = user;
+        this.gender = gender;
+        this.age = age;
+        this.height = height;
+        this.weight = weight;
+        this.chestSize = chestSize;
+        this.waistSize = waistSize;
+        this.hipSize = hipSize;
+        this.bloodType = bloodType;
+        this.testResult = testResult;
+        this.bmi = bmi;
+        this.goodProducts = goodProducts;
+        this.badProducts = badProducts;
+        this.calories = calories;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Test test = (Test) o;
-        return userLogin != null && Objects.equals(userLogin, test.userLogin);
+        return id != null && Objects.equals(id, test.id);
     }
 
     @Override

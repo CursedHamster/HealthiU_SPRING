@@ -1,6 +1,7 @@
 package com.example.healthiu.service.impl;
 
 import com.example.healthiu.entity.table.DoctorChatRoomRequest;
+import com.example.healthiu.entity.table.User;
 import com.example.healthiu.entity.table.UserChatRoomRequest;
 import com.example.healthiu.repository.DoctorChatRoomRequestRepository;
 import com.example.healthiu.repository.UserChatRoomRequestRepository;
@@ -24,12 +25,12 @@ public class ChatRoomRequestServiceImpl implements ChatRoomRequestService {
 
     @Override
     public boolean checkIfUserChatRoomRequestExists(String userLogin) {
-        return userChatRoomRequestRepository.findById(userLogin).isPresent();
+        return userChatRoomRequestRepository.findByUserLogin(userLogin).isPresent();
     }
 
     @Override
     public boolean checkIfDoctorChatRoomRequestExists(String doctorLogin) {
-        return doctorChatRoomRequestRepository.findById(doctorLogin).isPresent();
+        return doctorChatRoomRequestRepository.findByDoctorLogin(doctorLogin).isPresent();
     }
 
     @Override
@@ -43,24 +44,24 @@ public class ChatRoomRequestServiceImpl implements ChatRoomRequestService {
     }
 
     @Override
-    public void addNewUserChatRoomRequest(String login, String color) {
-        UserChatRoomRequest userChatRoomRequest = new UserChatRoomRequest(login, color);
+    public void addNewUserChatRoomRequest(User user) {
+        UserChatRoomRequest userChatRoomRequest = new UserChatRoomRequest(user);
         userChatRoomRequestRepository.save(userChatRoomRequest);
     }
 
     @Override
-    public void addNewDoctorChatRoomRequest(String login, String color) {
-        DoctorChatRoomRequest doctorChatRoomRequest = new DoctorChatRoomRequest(login, color);
+    public void addNewDoctorChatRoomRequest(User doctor) {
+        DoctorChatRoomRequest doctorChatRoomRequest = new DoctorChatRoomRequest(doctor);
         doctorChatRoomRequestRepository.save(doctorChatRoomRequest);
     }
 
     @Override
     public void removeUserChatRoomRequest(String login) {
-        userChatRoomRequestRepository.deleteById(login);
+        userChatRoomRequestRepository.deleteByUserLogin(login);
     }
 
     @Override
     public void removeDoctorChatRoomRequest(String login) {
-        doctorChatRoomRequestRepository.deleteById(login);
+        doctorChatRoomRequestRepository.deleteByDoctorLogin(login);
     }
 }

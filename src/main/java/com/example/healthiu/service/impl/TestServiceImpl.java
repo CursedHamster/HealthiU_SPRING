@@ -2,6 +2,7 @@ package com.example.healthiu.service.impl;
 
 import com.example.healthiu.entity.*;
 import com.example.healthiu.entity.table.Test;
+import com.example.healthiu.entity.table.User;
 import com.example.healthiu.repository.TestRepository;
 import com.example.healthiu.service.TestService;
 import com.google.gson.Gson;
@@ -25,7 +26,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public boolean checkIfTestExistsByUserLogin(String userLogin) {
-        return testRepository.findById(userLogin).isPresent();
+        return testRepository.findByUserLogin(userLogin).isPresent();
     }
 
     @Override
@@ -224,10 +225,10 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public void saveTest(TestData testData, String userLogin) {
+    public void saveTest(TestData testData, User user) {
         try {
             String caloriesString = new Gson().toJson(testData.getCalories());
-            Test test = new Test(userLogin,
+            Test test = new Test(user,
                     testData.getGender(),
                     testData.getAge(),
                     testData.getHeight(),

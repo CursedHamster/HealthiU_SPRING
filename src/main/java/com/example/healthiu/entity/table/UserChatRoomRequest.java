@@ -1,9 +1,9 @@
 package com.example.healthiu.entity.table;
 
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -15,17 +15,27 @@ import java.util.Objects;
 @AllArgsConstructor
 public class UserChatRoomRequest {
     @Id
-    private String userLogin;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column
-    private String color;
+    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "login")
+    private User user;
+
+//    @Column
+//    private String color;
+
+
+    public UserChatRoomRequest(User user) {
+        this.user = user;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         UserChatRoomRequest that = (UserChatRoomRequest) o;
-        return userLogin != null && Objects.equals(userLogin, that.userLogin);
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override

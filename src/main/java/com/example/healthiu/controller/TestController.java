@@ -4,6 +4,7 @@ import com.example.healthiu.entity.BloodType;
 import com.example.healthiu.entity.TestData;
 import com.example.healthiu.entity.table.Test;
 import com.example.healthiu.service.TestService;
+import com.example.healthiu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,12 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("/api/test")
 public class TestController {
     private final TestService testService;
+    private final UserService userService;
 
     @Autowired
-    public TestController(TestService testService) {
+    public TestController(TestService testService, UserService userService) {
         this.testService = testService;
+        this.userService = userService;
     }
 
     @PostMapping("/result")
@@ -42,7 +45,7 @@ public class TestController {
     public ResponseEntity<TestData> saveTestResult(@RequestParam String login,
                                                    @RequestBody TestData testData) {
         if (testData != null) {
-            testService.saveTest(testData, login);
+            testService.saveTest(testData, userService.findUserByLogin(login));
             return ok(testData);
         }
 

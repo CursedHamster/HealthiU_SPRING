@@ -1,7 +1,7 @@
 package com.example.healthiu.controller;
 
 import com.example.healthiu.entity.AuthenticationRequest;
-import com.example.healthiu.entity.RefreshTokenRequest;
+import com.example.healthiu.entity.table.RefreshTokenRequest;
 import com.example.healthiu.entity.UserData;
 import com.example.healthiu.entity.table.User;
 import com.example.healthiu.entity.table.VerificationToken;
