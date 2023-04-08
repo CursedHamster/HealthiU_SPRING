@@ -54,7 +54,7 @@ public class VerificationListener implements
                     = event.getVerificationUrl() + "?token=" + token;
             Map<String, Object> model = new HashMap<>();
             model.put("verificationUrl", verificationUrl);
-            model.put("websiteUrl", "http://localhost:5173/");
+            model.put("websiteUrl", "https://healthiu.netlify.app/");
             Context context = new Context();
             context.setVariables(model);
             String html = templateEngine.process(localeIsUkr ? "email_template_ukr.html" : "email_template_eng.html", context);

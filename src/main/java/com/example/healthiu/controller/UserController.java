@@ -25,7 +25,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-    private static final String VERIFICATION_URL = "http://localhost:5173/profile/verification";
+    private static final String VERIFICATION_URL = "https://healthiu.netlify.app/profile/verification";
     private final UserService userService;
 
     private final JwtTokenProvider jwtTokenProvider;

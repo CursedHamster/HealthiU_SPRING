@@ -28,7 +28,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    private static final String VERIFICATION_URL = "http://localhost:5173/sign-up/verification";
+    private static final String VERIFICATION_URL = "https://healthiu.netlify.app/sign-up/verification";
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
