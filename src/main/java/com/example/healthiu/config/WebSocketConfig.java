@@ -19,7 +19,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/chat-messaging")
-                .setAllowedOrigins("http://localhost:5173/", "http://localhost:8080")
+//                .setAllowedOrigins("http://localhost:5173/", "http://localhost:8080")
+                .setAllowedOrigins("https://healthiu.netlify.app")
                 .addInterceptors(new HttpHandshakeInterceptor())
         ;
     }

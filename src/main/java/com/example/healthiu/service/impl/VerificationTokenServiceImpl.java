@@ -37,6 +37,16 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
     }
 
     @Override
+    public void createVerificationToken(User user, String token, String email) {
+        VerificationToken verificationToken = getVerificationTokenOfUser(user);
+        if (verificationToken != null) {
+            verificationTokenRepository.deleteById(verificationToken.getId());
+        }
+        VerificationToken myToken = new VerificationToken(token, user, email);
+        verificationTokenRepository.save(myToken);
+    }
+
+    @Override
     public void deleteVerificationTokenById(Long id) {
         verificationTokenRepository.deleteById(id);
     }

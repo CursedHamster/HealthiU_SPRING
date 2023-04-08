@@ -4,6 +4,9 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,15 +28,25 @@ public class VerificationToken {
     @Column
     private String token;
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(nullable = false, name = "login")
     private User user;
     @Column
     private Date expiryDate;
+    @Column
+    private String email;
 
     public VerificationToken(String token, User user) {
         this.token = token;
         this.user = user;
         this.expiryDate = calculateExpiryDate();
+    }
+
+    public VerificationToken(String token, User user, String email) {
+        this.token = token;
+        this.user = user;
+        this.expiryDate = calculateExpiryDate();
+        this.email = email;
     }
 
     private Date calculateExpiryDate() {

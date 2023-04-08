@@ -2,14 +2,16 @@ package com.example.healthiu.service.impl;
 
 import com.example.healthiu.service.StorageService;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -30,8 +32,8 @@ public class StorageServiceIml implements StorageService {
         this.environment = environment;
     }
 
-    @Override
-    public void initializeFirebase() throws Exception {
+    @PostConstruct
+    public void init() throws Exception {
         FileInputStream serviceAccount =
                 new FileInputStream("src/main/resources/service_account.json");
         this.storage = StorageOptions.newBuilder()
@@ -47,6 +49,7 @@ public class StorageServiceIml implements StorageService {
         BlobId blobId = BlobId.of(bucketName, "user/" + objectName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(multipartFile.getContentType()).build();
         storage.create(blobInfo, Files.readAllBytes(filePath));
+        file.delete();
         return getFilePath(objectName);
     }
 

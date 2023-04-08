@@ -6,7 +6,7 @@ import com.example.healthiu.entity.UserData;
 import com.example.healthiu.entity.table.User;
 import com.example.healthiu.entity.table.VerificationToken;
 import com.example.healthiu.security.JwtTokenProvider;
-import com.example.healthiu.security.verification.OnRegistrationCompleteEvent;
+import com.example.healthiu.security.verification.VerificationEvent;
 import com.example.healthiu.service.RefreshTokenService;
 import com.example.healthiu.service.UserService;
 import com.example.healthiu.service.VerificationTokenService;
@@ -79,7 +79,7 @@ public class AuthController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         User user = userService.register(userData);
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(request.getLocale(),
+        eventPublisher.publishEvent(new VerificationEvent(request.getLocale(),
                 VERIFICATION_URL, user));
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -93,7 +93,7 @@ public class AuthController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         User user = userService.register(userData, role);
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(request.getLocale(),
+        eventPublisher.publishEvent(new VerificationEvent(request.getLocale(),
                 VERIFICATION_URL, user));
         return new ResponseEntity<>(HttpStatus.OK);
     }

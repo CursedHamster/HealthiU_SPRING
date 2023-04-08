@@ -15,6 +15,8 @@ public interface UserService {
 
     boolean checkIfEnabled(String login);
 
+    boolean checkEmailChange(UserData userData);
+
     int checkChangesCount(UserData userData);
 
     void updateUserInfo(UserData userData);
@@ -26,4 +28,6 @@ public interface UserService {
     User findUserByLogin(String login);
 
     User findUserByEmail(String email);
+
+    void deleteUser(String login);
 }

@@ -5,6 +5,9 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Objects;
@@ -20,18 +23,14 @@ public class Message {
     private Long id;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(nullable = false, name = "senderLogin")
     private User sender;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(nullable = false, name = "recipientLogin")
     private User recipient;
-
-//    @Column
-//    private String senderLogin;
-//
-//    @Column
-//    private String recipientLogin;
 
     @Column
     private String content;

@@ -18,33 +18,38 @@ import java.util.Map;
 import java.util.UUID;
 
 @Component
-public class RegistrationListener implements
-        ApplicationListener<OnRegistrationCompleteEvent> {
+public class VerificationListener implements
+        ApplicationListener<VerificationEvent> {
     private final VerificationTokenService verificationTokenService;
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
     @Autowired
-    public RegistrationListener(VerificationTokenService verificationTokenService, JavaMailSender mailSender, SpringTemplateEngine templateEngine) {
+    public VerificationListener(VerificationTokenService verificationTokenService, JavaMailSender mailSender, SpringTemplateEngine templateEngine) {
         this.verificationTokenService = verificationTokenService;
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
     }
 
     @Override
-    public void onApplicationEvent(OnRegistrationCompleteEvent event) {
-        this.confirmRegistration(event);
+    public void onApplicationEvent(VerificationEvent event) {
+        this.verify(event);
     }
 
-    private void confirmRegistration(OnRegistrationCompleteEvent event) {
+    private void verify(VerificationEvent event) {
         try {
             User user = event.getUser();
             String token = UUID.randomUUID().toString();
-            verificationTokenService.createVerificationToken(user, token);
-
-            String recipientAddress = user.getEmail();
             boolean localeIsUkr = (event.getSource()).equals(Locale.UK);
             String subject = localeIsUkr ? "Підтвердження реєстрації" : "Registration Confirmation";
+            String recipientAddress = user.getEmail();
+            if (event.getEmail() != null) {
+                verificationTokenService.createVerificationToken(user, token, event.getEmail());
+                recipientAddress = event.getEmail();
+                subject = localeIsUkr ? "Підтвердження зміни електронної пошти" : "New Email Confirmation";
+            } else {
+                verificationTokenService.createVerificationToken(user, token);
+            }
             String verificationUrl
                     = event.getVerificationUrl() + "?token=" + token;
             Map<String, Object> model = new HashMap<>();

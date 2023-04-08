@@ -23,4 +23,5 @@ public class UserData implements Serializable {
     private String confirmPassword;
 
     private Date dateOfBirth;
+    private String imgUrl;
 }

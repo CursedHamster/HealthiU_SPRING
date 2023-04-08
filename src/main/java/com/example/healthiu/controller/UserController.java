@@ -2,15 +2,22 @@ package com.example.healthiu.controller;
 
 import com.example.healthiu.entity.UserData;
 import com.example.healthiu.entity.table.User;
+import com.example.healthiu.entity.table.VerificationToken;
 import com.example.healthiu.security.JwtTokenProvider;
+import com.example.healthiu.security.verification.VerificationEvent;
 import com.example.healthiu.service.UserService;
 import com.example.healthiu.service.StorageService;
+import com.example.healthiu.service.VerificationTokenService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Calendar;
+import java.util.Map;
 import java.util.Objects;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -18,17 +25,24 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-    UserService userService;
+    private static final String VERIFICATION_URL = "http://localhost:5173/profile/verification";
+    private final UserService userService;
 
-    JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    StorageService storageService;
+    private final StorageService storageService;
+    private final ApplicationEventPublisher eventPublisher;
+    private final VerificationTokenService verificationTokenService;
 
     @Autowired
-    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, StorageService storageService) {
+    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider,
+                          StorageService storageService, ApplicationEventPublisher eventPublisher,
+                          VerificationTokenService verificationTokenService) {
         this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.storageService = storageService;
+        this.eventPublisher = eventPublisher;
+        this.verificationTokenService = verificationTokenService;
     }
 
     @GetMapping
@@ -53,30 +67,53 @@ public class UserController {
     }
 
     @PostMapping("/change")
-    public ResponseEntity<User> changeUser(@RequestBody UserData userData) {
+    public ResponseEntity<User> changeUser(@RequestBody UserData userData, HttpServletRequest request) {
         if (userService.checkIfEmailExists(userData.getEmail()) &&
                 !Objects.equals(userService.findUserByEmail(userData.getEmail()).getLogin(), userData.getLogin())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        if (userService.checkChangesCount(userData) == 0) {
+        boolean emailChanged = userService.checkEmailChange(userData);
+        if (userService.checkChangesCount(userData) == 0 && !emailChanged) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else if (userData.getPassword().length() > 0 && !Objects.equals(userData.getPassword(), userData.getConfirmPassword())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         userService.updateUserInfo(userData);
         User user = userService.findUserByLogin(userData.getLogin());
+        if (emailChanged) {
+            eventPublisher.publishEvent(new VerificationEvent(request.getLocale(),
+                    VERIFICATION_URL, user, userData.getEmail()));
+            return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
+        }
         return ok(user);
     }
 
     @PostMapping(value = "/change-picture", consumes = "multipart/form-data")
-    public String changeProfilePicture(@RequestParam(name = "file") MultipartFile file) {
-        System.out.println("started meow");
+    public ResponseEntity<String> changeProfilePicture(@RequestParam(name = "file") MultipartFile file) {
         try {
-            storageService.initializeFirebase();
-            System.out.println(storageService.uploadFile(file));
+            return ok(storageService.uploadFile(file));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return "meow";
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<Map<String, Object>> verify(@RequestParam(name = "token") String token) {
+        VerificationToken verificationToken = verificationTokenService.getVerificationToken(token);
+        if (verificationToken == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Calendar cal = Calendar.getInstance();
+        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        User user = verificationToken.getUser();
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        user.setEmail(verificationToken.getEmail());
+        verificationTokenService.deleteVerificationTokenById(verificationToken.getId());
+        userService.saveUser(user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
