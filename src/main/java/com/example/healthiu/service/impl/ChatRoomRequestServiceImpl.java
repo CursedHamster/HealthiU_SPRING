@@ -6,6 +6,7 @@ import com.example.healthiu.entity.table.UserChatRoomRequest;
 import com.example.healthiu.repository.DoctorChatRoomRequestRepository;
 import com.example.healthiu.repository.UserChatRoomRequestRepository;
 import com.example.healthiu.service.ChatRoomRequestService;
+import com.example.healthiu.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,14 @@ import java.util.List;
 @Service("requestChatRoomService")
 public class ChatRoomRequestServiceImpl implements ChatRoomRequestService {
     private final UserChatRoomRequestRepository userChatRoomRequestRepository;
-
     private final DoctorChatRoomRequestRepository doctorChatRoomRequestRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public ChatRoomRequestServiceImpl(UserChatRoomRequestRepository userChatRoomRequestRepository, DoctorChatRoomRequestRepository doctorChatRoomRequestRepository) {
+    public ChatRoomRequestServiceImpl(UserChatRoomRequestRepository userChatRoomRequestRepository, DoctorChatRoomRequestRepository doctorChatRoomRequestRepository, EmailService emailService) {
         this.userChatRoomRequestRepository = userChatRoomRequestRepository;
         this.doctorChatRoomRequestRepository = doctorChatRoomRequestRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -47,12 +49,14 @@ public class ChatRoomRequestServiceImpl implements ChatRoomRequestService {
     public void addNewUserChatRoomRequest(User user) {
         UserChatRoomRequest userChatRoomRequest = new UserChatRoomRequest(user);
         userChatRoomRequestRepository.save(userChatRoomRequest);
+        emailService.sendNewChatRoomRequestLetter(user.getLogin(), user.getRole());
     }
 
     @Override
     public void addNewDoctorChatRoomRequest(User doctor) {
         DoctorChatRoomRequest doctorChatRoomRequest = new DoctorChatRoomRequest(doctor);
         doctorChatRoomRequestRepository.save(doctorChatRoomRequest);
+        emailService.sendNewChatRoomRequestLetter(doctor.getLogin(), doctor.getRole());
     }
 
     @Override
