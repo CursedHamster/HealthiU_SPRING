@@ -68,8 +68,7 @@
     <table class='container'>
         <tr>
             <td>
-                <p th:text="${login} sent a new
-                ${${role} == 'DOCTOR' ? 'doctor' : 'user'} request">UserLogin sent a new user request</p>
+                <p th:text="${login} sent a new ${role == 'DOCTOR' ? 'doctor' : 'user'} request">UserLogin sent a new user request</p>
             </td>
         </tr>
         <tr>
