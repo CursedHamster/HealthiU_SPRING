@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkIfUserExist(String login) {
-        return userRepository.findById(login).isPresent();
+        return userRepository.findUserByLoginIgnoreCase(login).isPresent();
     }
 
     @Override
