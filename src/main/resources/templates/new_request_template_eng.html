@@ -21,9 +21,8 @@
             margin: 0 auto;
         }
 
-        .container h1 {
+        .container h3 {
             color: #072217;
-            margin-bottom: 0;
             font-weight: 400;
         }
 
@@ -43,24 +42,6 @@
             margin: 0 auto 1.5rem;
             text-decoration: none;
         }
-
-        p {
-            line-height: 1.5;
-            color: #1A2424;
-        }
-
-        .container .gray a {
-            color: #244f48;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        @media screen and (max-width: 600px) {
-            body {
-                font-size: 14px;
-                padding: .1rem;
-            }
-        }
     </style>
 </head>
 <body>
@@ -68,7 +49,7 @@
     <table class='container'>
         <tr>
             <td>
-                <p th:inline="text">[[${login}]] sent a new [[${role} == 'DOCTOR' ? 'doctor' : 'user']] request</p>
+                <h3 th:inline="text"><b>[[${login}]]</b> sent a new [[${role} == 'DOCTOR' ? 'doctor' : 'user']] request</h3>
             </td>
         </tr>
         <tr>
