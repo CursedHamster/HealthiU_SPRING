@@ -3,6 +3,8 @@ package com.example.healthiu.service;
 import com.example.healthiu.entity.UserData;
 import com.example.healthiu.entity.table.User;
 
+import java.util.List;
+
 
 public interface UserService {
     User register(UserData user);
@@ -21,7 +23,7 @@ public interface UserService {
 
     void updateUserInfo(UserData userData);
 
-    boolean checkIfUserExist(String email);
+    boolean checkIfUserExists(String login);
 
     boolean checkIfEmailExists(String email);
 
@@ -30,4 +32,6 @@ public interface UserService {
     User findUserByEmail(String email);
 
     void deleteUser(String login);
+
+    List<User> getAllUsers();
 }

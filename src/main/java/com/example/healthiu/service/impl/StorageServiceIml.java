@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.Date;
 import java.util.Objects;
 
-@Service
+@Service("storageService")
 public class StorageServiceIml implements StorageService {
     private final Environment environment;
     private Storage storage;
