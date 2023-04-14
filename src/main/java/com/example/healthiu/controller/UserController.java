@@ -5,8 +5,8 @@ import com.example.healthiu.entity.table.User;
 import com.example.healthiu.entity.table.VerificationToken;
 import com.example.healthiu.security.JwtTokenProvider;
 import com.example.healthiu.security.verification.VerificationEvent;
-import com.example.healthiu.service.UserService;
 import com.example.healthiu.service.StorageService;
+import com.example.healthiu.service.UserService;
 import com.example.healthiu.service.VerificationTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +34,14 @@ public class UserController {
     private final ApplicationEventPublisher eventPublisher;
     private final VerificationTokenService verificationTokenService;
 
+//    @Autowired
+//    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, ApplicationEventPublisher eventPublisher, VerificationTokenService verificationTokenService) {
+//        this.userService = userService;
+//        this.jwtTokenProvider = jwtTokenProvider;
+//        this.eventPublisher = eventPublisher;
+//        this.verificationTokenService = verificationTokenService;
+//    }
+
     @Autowired
     public UserController(UserService userService, JwtTokenProvider jwtTokenProvider,
                           StorageService storageService, ApplicationEventPublisher eventPublisher,
@@ -57,7 +65,7 @@ public class UserController {
 
     @GetMapping("/{login}")
     public ResponseEntity<User> getUserInfo(@PathVariable(name = "login") String login) {
-        if (userService.checkIfUserExist(login)) {
+        if (userService.checkIfUserExists(login)) {
             User user = userService.findUserByLogin(login);
             user.setPassword(null);
             user.setEmail(null);

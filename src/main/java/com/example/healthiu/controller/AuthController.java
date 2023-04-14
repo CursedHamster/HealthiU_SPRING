@@ -74,7 +74,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(@RequestBody UserData userData, HttpServletRequest request) {
         String username = userData.getLogin();
-        if (userService.checkIfUserExist(username) || userService.checkIfEmailExists(userData.getEmail())
+        if (userService.checkIfUserExists(username) || userService.checkIfEmailExists(userData.getEmail())
                 && userService.checkIfEnabled(username)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -88,7 +88,7 @@ public class AuthController {
     public ResponseEntity<Map<String, Object>> register(@RequestBody UserData userData, @RequestParam(name = "role") String role,
                                                         HttpServletRequest request) {
         String username = userData.getLogin();
-        if (userService.checkIfUserExist(username) || userService.checkIfEmailExists(userData.getEmail())
+        if (userService.checkIfUserExists(username) || userService.checkIfEmailExists(userData.getEmail())
                 && userService.checkIfEnabled(username)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }

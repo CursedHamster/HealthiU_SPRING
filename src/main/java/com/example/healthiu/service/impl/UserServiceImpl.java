@@ -11,11 +11,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service("userService")
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final StorageService storageService;
     private final PasswordEncoder passwordEncoder;
+
+//    @Autowired
+//    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+//        this.userRepository = userRepository;
+//        this.passwordEncoder = passwordEncoder;
+//    }
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, StorageService storageService, PasswordEncoder passwordEncoder) {
@@ -103,7 +111,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean checkIfUserExist(String login) {
+    public boolean checkIfUserExists(String login) {
         return userRepository.findUserByLoginIgnoreCase(login).isPresent();
     }
 
@@ -125,6 +133,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String login) {
         userRepository.deleteById(login);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
 
