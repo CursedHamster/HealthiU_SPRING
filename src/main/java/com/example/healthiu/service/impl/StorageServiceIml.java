@@ -36,6 +36,7 @@ public class StorageServiceIml implements StorageService {
 
     @PostConstruct
     public void init() throws Exception {
+        System.out.println(environment.getRequiredProperty("FIREBASE_PRIVATE_KEY"));
         bucketName = environment.getRequiredProperty("FIREBASE_BUCKET_NAME");
         projectId = environment.getRequiredProperty("FIREBASE_PROJECT_ID");
 

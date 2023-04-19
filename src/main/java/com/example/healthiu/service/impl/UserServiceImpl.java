@@ -19,12 +19,6 @@ public class UserServiceImpl implements UserService {
     private final StorageService storageService;
     private final PasswordEncoder passwordEncoder;
 
-//    @Autowired
-//    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-//        this.userRepository = userRepository;
-//        this.passwordEncoder = passwordEncoder;
-//    }
-
     @Autowired
     public UserServiceImpl(UserRepository userRepository, StorageService storageService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;

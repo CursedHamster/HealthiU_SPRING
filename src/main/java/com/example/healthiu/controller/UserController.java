@@ -34,14 +34,6 @@ public class UserController {
     private final ApplicationEventPublisher eventPublisher;
     private final VerificationTokenService verificationTokenService;
 
-//    @Autowired
-//    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, ApplicationEventPublisher eventPublisher, VerificationTokenService verificationTokenService) {
-//        this.userService = userService;
-//        this.jwtTokenProvider = jwtTokenProvider;
-//        this.eventPublisher = eventPublisher;
-//        this.verificationTokenService = verificationTokenService;
-//    }
-
     @Autowired
     public UserController(UserService userService, JwtTokenProvider jwtTokenProvider,
                           StorageService storageService, ApplicationEventPublisher eventPublisher,
