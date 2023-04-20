@@ -56,7 +56,7 @@ public class TestController {
     public ResponseEntity<TestData> getUserTestResult(@RequestParam String login) {
         if (testService.checkIfTestExistsByUserLogin(login)) {
             Test test = testService.findTestByLogin(login);
-            TestData testData = testService.castTestToTestData(test);
+            TestData testData = new TestData(test);
             return ok(testData);
         }
         return ok(new TestData());

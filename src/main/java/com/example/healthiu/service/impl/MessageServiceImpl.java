@@ -23,12 +23,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sortMessageList(List<Message> messageList) {
-        messageList.sort(Comparator.comparing(Message::getId));
-    }
-
-    @Override
-    public List<Message> findAllMessagesByLogins(String login, String companion) {
+    public List<MessageData> findAllMessagesByLogins(String login, String companion) {
         List<Message> messageList = new ArrayList<>();
         if (messageRepository.findBySenderLoginAndRecipientLogin(login, companion).isPresent()) {
             messageList.addAll(messageRepository.findAllBySenderLoginAndRecipientLogin(login, companion));
@@ -37,14 +32,14 @@ public class MessageServiceImpl implements MessageService {
             messageList.addAll(messageRepository.findAllBySenderLoginAndRecipientLogin(companion, login));
         }
         sortMessageList(messageList);
-        return messageList;
+        return convertMessageListToMessageDataList(messageList);
     }
 
     @Override
     public List<MessageData> convertMessageListToMessageDataList(List<Message> messageList) {
         List<MessageData> messageDataList = new ArrayList<>();
         for (Message message : messageList) {
-            messageDataList.add(convertMessageToMessageData(message));
+            messageDataList.add(new MessageData(message));
         }
         return messageDataList;
     }
@@ -55,13 +50,6 @@ public class MessageServiceImpl implements MessageService {
         messageRepository.save(message);
         return message;
     }
-
-    @Override
-    public MessageData convertMessageToMessageData(Message message) {
-        return new MessageData(message.getId(), message.getContent(), message.getSender().getLogin(),
-                message.getRecipient().getLogin(), message.getTimestamp(), message.getStatus());
-    }
-
     @Override
     public Message findMessageById(Long id) {
         return messageRepository.findMessageById(id);
@@ -72,5 +60,14 @@ public class MessageServiceImpl implements MessageService {
         Message message = messageRepository.findMessageById(id);
         message.setStatus(MessageStatus.READ.toString());
         messageRepository.save(message);
+    }
+
+    @Override
+    public Long countUnreadMessages(String senderLogin, String recipientLogin) {
+        return messageRepository.countAllBySenderLoginIsAndRecipientLoginIsAndStatusIs(senderLogin, recipientLogin,
+                MessageStatus.UNREAD.toString());
+    }
+    public void sortMessageList(List<Message> messageList) {
+        messageList.sort(Comparator.comparing(Message::getId));
     }
 }

@@ -14,4 +14,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> findAllBySenderLoginAndRecipientLogin(String senderLogin, String recipientLogin);
 
     Message findMessageById(Long id);
+
+    Long countAllBySenderLoginIsAndRecipientLoginIsAndStatusIs(String senderLogin, String recipientLogin, String status);
 }

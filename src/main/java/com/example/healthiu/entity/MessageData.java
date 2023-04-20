@@ -1,5 +1,6 @@
 package com.example.healthiu.entity;
 
+import com.example.healthiu.entity.table.Message;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -34,5 +35,14 @@ public class MessageData implements Serializable {
         this.content = content;
         this.senderLogin = senderLogin;
         this.recipientLogin = recipientLogin;
+    }
+
+    public MessageData(Message message) {
+        this.id = message.getId();
+        this.content = message.getContent();
+        this.senderLogin = message.getSender().getLogin();
+        this.recipientLogin = message.getRecipient().getLogin();
+        this.timestamp = message.getTimestamp();
+        this.status = message.getStatus();
     }
 }

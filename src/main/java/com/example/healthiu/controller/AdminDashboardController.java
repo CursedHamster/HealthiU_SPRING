@@ -1,6 +1,6 @@
 package com.example.healthiu.controller;
 
-import com.example.healthiu.entity.table.User;
+import com.example.healthiu.entity.UserData;
 import com.example.healthiu.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class AdminDashboardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserData>> getAllUsers() {
         return ok(userService.getAllUsers());
     }
 

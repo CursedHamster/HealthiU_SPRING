@@ -34,14 +34,6 @@ public class UserController {
     private final ApplicationEventPublisher eventPublisher;
     private final VerificationTokenService verificationTokenService;
 
-//    @Autowired
-//    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, ApplicationEventPublisher eventPublisher, VerificationTokenService verificationTokenService) {
-//        this.userService = userService;
-//        this.jwtTokenProvider = jwtTokenProvider;
-//        this.eventPublisher = eventPublisher;
-//        this.verificationTokenService = verificationTokenService;
-//    }
-
     @Autowired
     public UserController(UserService userService, JwtTokenProvider jwtTokenProvider,
                           StorageService storageService, ApplicationEventPublisher eventPublisher,
@@ -54,28 +46,27 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<User> getUser(@RequestParam(name = "login") String userLogin, @RequestParam String token) {
+    public ResponseEntity<UserData> getUser(@RequestParam(name = "login") String userLogin, @RequestParam String token) {
         boolean validated = jwtTokenProvider.validateToken(token);
         User user = userService.findUserByLogin(userLogin);
         if (validated) {
-            return ok(user);
+            return ok(new UserData(user));
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/{login}")
-    public ResponseEntity<User> getUserInfo(@PathVariable(name = "login") String login) {
+    public ResponseEntity<UserData> getUserInfo(@PathVariable(name = "login") String login) {
         if (userService.checkIfUserExists(login)) {
             User user = userService.findUserByLogin(login);
-            user.setPassword(null);
             user.setEmail(null);
-            return ok(user);
+            return ok(new UserData(user));
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/change")
-    public ResponseEntity<User> changeUser(@RequestBody UserData userData, HttpServletRequest request) {
+    @PutMapping("/change")
+    public ResponseEntity<UserData> changeUser(@RequestBody UserData userData, HttpServletRequest request) {
         if (userService.checkIfEmailExists(userData.getEmail()) &&
                 !Objects.equals(userService.findUserByEmail(userData.getEmail()).getLogin(), userData.getLogin())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -91,12 +82,12 @@ public class UserController {
         if (emailChanged) {
             eventPublisher.publishEvent(new VerificationEvent(request.getLocale(),
                     VERIFICATION_URL, user, userData.getEmail()));
-            return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(new UserData(user), HttpStatus.ACCEPTED);
         }
-        return ok(user);
+        return ok(new UserData(user));
     }
 
-    @PostMapping(value = "/change-picture", consumes = "multipart/form-data")
+    @PutMapping(value = "/change-picture", consumes = "multipart/form-data")
     public ResponseEntity<String> changeProfilePicture(@RequestParam(name = "file") MultipartFile file) {
         try {
             return ok(storageService.uploadFile(file));

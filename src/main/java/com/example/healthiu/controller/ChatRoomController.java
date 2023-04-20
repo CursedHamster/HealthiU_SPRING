@@ -1,9 +1,9 @@
 package com.example.healthiu.controller;
 
+import com.example.healthiu.entity.ChatRoomData;
+import com.example.healthiu.entity.MessageData;
 import com.example.healthiu.entity.MessageStatus;
 import com.example.healthiu.entity.Role;
-import com.example.healthiu.entity.table.ChatRoom;
-import com.example.healthiu.entity.table.Message;
 import com.example.healthiu.entity.table.User;
 import com.example.healthiu.service.ChatRoomRequestService;
 import com.example.healthiu.service.ChatRoomService;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -87,32 +86,34 @@ public class ChatRoomController {
     }
 
     @GetMapping("/chatrooms")
-    public ResponseEntity<List<ChatRoom>> getChatRooms(@RequestParam(name = "login") String login) {
+    public ResponseEntity<List<ChatRoomData>> getChatRooms(@RequestParam(name = "login") String login) {
         String role = userService.findUserByLogin(login).getRole();
-        List<ChatRoom> chatRoomList = new ArrayList<>();
+        List<ChatRoomData> chatRoomDataList = new ArrayList<>();
         if (role.equals(Role.USER.toString())) {
-            chatRoomList = chatRoomService.findAllChatRoomsByUserLogin(login);
+            chatRoomService.findAllChatRoomsByUserLogin(login).forEach(chatRoom ->
+                    chatRoomDataList.add(new ChatRoomData(chatRoom)));
+            chatRoomDataList.forEach(chatRoomData ->
+                    chatRoomData.setUnreadMessagesCount(
+                            messageService.countUnreadMessages(
+                                    chatRoomData.getDoctor().getLogin(),
+                                    chatRoomData.getUser().getLogin())));
+        } else if (role.equals(Role.DOCTOR.toString())) {
+            chatRoomService.findAllChatRoomsByDoctorLogin(login).forEach(chatRoom ->
+                    chatRoomDataList.add(new ChatRoomData(chatRoom)));
+            chatRoomDataList.forEach(chatRoomData ->
+                    chatRoomData.setUnreadMessagesCount(
+                            messageService.countUnreadMessages(
+                                    chatRoomData.getUser().getLogin(),
+                                    chatRoomData.getDoctor().getLogin())));
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (role.equals(Role.DOCTOR.toString())) {
-            chatRoomList = chatRoomService.findAllChatRoomsByDoctorLogin(login);
-        }
-        chatRoomList = chatRoomList
-                .stream().peek(
-                        chatRoom -> chatRoom.setUnreadMessagesCount(
-                                messageService.findAllMessagesByLogins(chatRoom.getUser().getLogin(),
-                                                chatRoom.getDoctor().getLogin())
-                                        .stream().filter(
-                                                message -> message.getRecipient().getLogin().equals(login)
-                                                        && message.getStatus().equals(MessageStatus.UNREAD.toString())).count()
-                        )
-                )
-                .collect(Collectors.toList());
 
-        return ok(chatRoomList);
+        return ok(chatRoomDataList);
     }
 
     @GetMapping("/messages")
-    public ResponseEntity<List<Message>> getMessages(@RequestParam(name = "login") String login,
+    public ResponseEntity<List<MessageData>> getMessages(@RequestParam(name = "login") String login,
                                                          @RequestParam(name = "companion") String companion) {
         return ok(messageService.findAllMessagesByLogins(login, companion));
     }

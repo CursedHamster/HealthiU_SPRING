@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("userService")
@@ -18,12 +19,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final StorageService storageService;
     private final PasswordEncoder passwordEncoder;
-
-//    @Autowired
-//    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-//        this.userRepository = userRepository;
-//        this.passwordEncoder = passwordEncoder;
-//    }
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, StorageService storageService, PasswordEncoder passwordEncoder) {
@@ -136,8 +131,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserData> getAllUsers() {
+        List<UserData> userDataList = new ArrayList<>();
+        List<User> userList = userRepository.findAll();
+        userList.forEach(user -> userDataList.add(new UserData(user)));
+        return userDataList;
     }
 
 

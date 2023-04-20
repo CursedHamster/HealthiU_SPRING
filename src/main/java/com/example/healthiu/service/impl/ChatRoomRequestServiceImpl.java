@@ -1,5 +1,7 @@
 package com.example.healthiu.service.impl;
 
+import com.example.healthiu.entity.DoctorChatRoomRequestData;
+import com.example.healthiu.entity.UserChatRoomRequestData;
 import com.example.healthiu.entity.table.DoctorChatRoomRequest;
 import com.example.healthiu.entity.table.User;
 import com.example.healthiu.entity.table.UserChatRoomRequest;
@@ -10,6 +12,7 @@ import com.example.healthiu.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("requestChatRoomService")
@@ -26,6 +29,16 @@ public class ChatRoomRequestServiceImpl implements ChatRoomRequestService {
     }
 
     @Override
+    public UserChatRoomRequest findUserChatRoomRequestByLogin(String userLogin) {
+        return userChatRoomRequestRepository.findByUserLogin(userLogin).orElseThrow();
+    }
+
+    @Override
+    public DoctorChatRoomRequest findDoctorChatRoomRequestByLogin(String userLogin) {
+        return doctorChatRoomRequestRepository.findByDoctorLogin(userLogin).orElseThrow();
+    }
+
+    @Override
     public boolean checkIfUserChatRoomRequestExists(String userLogin) {
         return userChatRoomRequestRepository.findByUserLogin(userLogin).isPresent();
     }
@@ -36,13 +49,21 @@ public class ChatRoomRequestServiceImpl implements ChatRoomRequestService {
     }
 
     @Override
-    public List<UserChatRoomRequest> findAllUserChatRoomRequests() {
-        return userChatRoomRequestRepository.findAll();
+    public List<UserChatRoomRequestData> findAllUserChatRoomRequests() {
+        List<UserChatRoomRequestData> userChatRoomRequestDataList = new ArrayList<>();
+        List<UserChatRoomRequest> userChatRoomRequestList = userChatRoomRequestRepository.findAll();
+        userChatRoomRequestList.forEach(userChatRoomRequest ->
+                userChatRoomRequestDataList.add(new UserChatRoomRequestData(userChatRoomRequest)));
+        return userChatRoomRequestDataList;
     }
 
     @Override
-    public List<DoctorChatRoomRequest> findAllDoctorChatRoomRequests() {
-        return doctorChatRoomRequestRepository.findAll();
+    public List<DoctorChatRoomRequestData> findAllDoctorChatRoomRequests() {
+        List<DoctorChatRoomRequestData> doctorChatRoomRequestDataList = new ArrayList<>();
+        List<DoctorChatRoomRequest> doctorChatRoomRequestList = doctorChatRoomRequestRepository.findAll();
+        doctorChatRoomRequestList.forEach(doctorChatRoomRequest ->
+                doctorChatRoomRequestDataList.add(new DoctorChatRoomRequestData(doctorChatRoomRequest)));
+        return doctorChatRoomRequestDataList;
     }
 
     @Override

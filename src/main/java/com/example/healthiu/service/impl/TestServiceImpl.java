@@ -1,16 +1,17 @@
 package com.example.healthiu.service.impl;
 
-import com.example.healthiu.entity.*;
+import com.example.healthiu.entity.BloodType;
+import com.example.healthiu.entity.Gender;
+import com.example.healthiu.entity.TestData;
+import com.example.healthiu.entity.TestResult;
 import com.example.healthiu.entity.table.Test;
 import com.example.healthiu.entity.table.User;
 import com.example.healthiu.repository.TestRepository;
 import com.example.healthiu.service.TestService;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -251,28 +252,6 @@ public class TestServiceImpl implements TestService {
     @Override
     public Test findTestByLogin(String login) {
         return testRepository.findTestByUserLogin(login);
-    }
-
-    @Override
-    public TestData castTestToTestData(Test test) {
-        Type empMapType = new TypeToken<Map<String, Double>>() {
-        }.getType();
-        Map<String, Double> caloriesMap = new Gson().fromJson(test.getCalories(), empMapType);
-        return new TestData(
-                test.getGender(),
-                test.getAge(),
-                test.getHeight(),
-                test.getWeight(),
-                test.getChestSize(),
-                test.getWaistSize(),
-                test.getHipSize(),
-                test.getBloodType(),
-                test.getTestResult(),
-                test.getBmi(),
-                test.getGoodProducts(),
-                test.getBadProducts(),
-                caloriesMap
-        );
     }
 
 

@@ -23,6 +23,4 @@ public interface TestService {
     void saveTest(TestData testData, User user);
 
     Test findTestByLogin(String login);
-
-    TestData castTestToTestData(Test test);
 }

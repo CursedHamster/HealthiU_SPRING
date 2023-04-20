@@ -33,5 +33,5 @@ public interface UserService {
 
     void deleteUser(String login);
 
-    List<User> getAllUsers();
+    List<UserData> getAllUsers();
 }
