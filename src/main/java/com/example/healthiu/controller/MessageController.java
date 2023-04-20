@@ -25,17 +25,18 @@ public class MessageController {
 
     @MessageMapping("/message/{senderLogin}/{recipientLogin}")
     @SendTo({"/chat/messages/{senderLogin}", "/chat/messages/{recipientLogin}"})
-    public Message addMessage(@RequestBody MessageData messageData,
-                              @DestinationVariable String senderLogin,
-                              @DestinationVariable String recipientLogin) {
+    public MessageData addMessage(@RequestBody MessageData messageData,
+                                  @DestinationVariable String senderLogin,
+                                  @DestinationVariable String recipientLogin) {
         if (senderLogin.equals(messageData.getSenderLogin()) && recipientLogin.equals(messageData.getRecipientLogin())
                 && messageData.getContent() != null) {
-            return messageService.addNewMessage(
+            Message newMessage = messageService.addNewMessage(
                     userService.findUserByLogin(messageData.getSenderLogin()),
                     userService.findUserByLogin(messageData.getRecipientLogin()),
                     messageData.getContent());
+            return new MessageData(newMessage);
         }
-        return new Message();
+        return new MessageData();
     }
 
     @MessageExceptionHandler

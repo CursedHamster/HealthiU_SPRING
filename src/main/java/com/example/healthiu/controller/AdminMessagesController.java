@@ -1,7 +1,7 @@
 package com.example.healthiu.controller;
 
-import com.example.healthiu.entity.table.DoctorChatRoomRequest;
-import com.example.healthiu.entity.table.UserChatRoomRequest;
+import com.example.healthiu.entity.DoctorChatRoomRequestData;
+import com.example.healthiu.entity.UserChatRoomRequestData;
 import com.example.healthiu.service.ChatRoomRequestService;
 import com.example.healthiu.service.ChatRoomService;
 import com.example.healthiu.service.UserService;
@@ -34,8 +34,8 @@ public class AdminMessagesController {
 
     @GetMapping("/requests")
     public ResponseEntity<Map<String, Object>> getChatRoomRequests() {
-        List<UserChatRoomRequest> userChatRoomRequests = chatRoomRequestService.findAllUserChatRoomRequests();
-        List<DoctorChatRoomRequest> doctorChatRoomRequests = chatRoomRequestService.findAllDoctorChatRoomRequests();
+        List<UserChatRoomRequestData> userChatRoomRequests = chatRoomRequestService.findAllUserChatRoomRequests();
+        List<DoctorChatRoomRequestData> doctorChatRoomRequests = chatRoomRequestService.findAllDoctorChatRoomRequests();
         Map<String, Object> model = new HashMap<>();
         model.put("user", userChatRoomRequests);
         model.put("doctor", doctorChatRoomRequests);
@@ -46,15 +46,14 @@ public class AdminMessagesController {
     public ResponseEntity<Boolean> addChatRoom(@RequestBody Map<String, String> chatRoomRequests) {
         String user = chatRoomRequests.get("user");
         String doctor = chatRoomRequests.get("doctor");
-        UserChatRoomRequest userChatRoomRequest = new UserChatRoomRequest(userService.findUserByLogin(user));
-        DoctorChatRoomRequest doctorChatRoomRequest = new DoctorChatRoomRequest(userService.findUserByLogin(doctor));
-        if (chatRoomRequestService.checkIfUserChatRoomRequestExists(userChatRoomRequest.getUser().getLogin())
-                && chatRoomRequestService.checkIfDoctorChatRoomRequestExists(doctorChatRoomRequest.getDoctor().getLogin())) {
-            if (chatRoomService.checkIfChatRoomExists(userChatRoomRequest.getUser().getLogin())) {
+        if (chatRoomRequestService.checkIfUserChatRoomRequestExists(user)
+                && chatRoomRequestService.checkIfDoctorChatRoomRequestExists(doctor)) {
+            if (chatRoomService.checkIfChatRoomExists(user)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            chatRoomService.addNewChatRoom(userChatRoomRequest, doctorChatRoomRequest);
-            chatRoomRequestService.removeUserChatRoomRequest(userChatRoomRequest.getUser().getLogin());
+            chatRoomService.addNewChatRoom(chatRoomRequestService.findUserChatRoomRequestByLogin(user),
+                    chatRoomRequestService.findDoctorChatRoomRequestByLogin(doctor));
+            chatRoomRequestService.removeUserChatRoomRequest(user);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
