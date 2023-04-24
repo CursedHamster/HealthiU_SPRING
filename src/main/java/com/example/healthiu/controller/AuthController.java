@@ -51,9 +51,6 @@ public class AuthController {
         Map<String, Object> model = new HashMap<>();
         String username = data.getUsername();
         String refreshToken = data.getRefreshToken();
-        if (!refreshTokenService.checkIfRefreshTokenExists(username)) {
-            return ok(null);
-        }
         if (refreshTokenService.checkIfRefreshTokenIsRight(username, refreshToken)) {
             String token = jwtTokenProvider.createToken(username, userService.findUserByLogin(username).getRole());
             model.put("token", token);
