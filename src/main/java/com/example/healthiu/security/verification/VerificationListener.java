@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import java.util.Locale;
 import java.util.UUID;
 
 @Component
@@ -30,9 +29,7 @@ public class VerificationListener implements
     private void verify(VerificationEvent event) {
         User user = event.getUser();
         String token = UUID.randomUUID().toString();
-        System.out.println(event.getSource());
-        System.out.println(Locale.UK);
-        boolean localeIsUkr = (event.getSource()).equals(Locale.UK);
+        boolean localeIsUkr = (event.getSource()).equals("uk_UA");
         boolean hasEmail = event.getEmail() != null;
         String recipientAddress = hasEmail ? event.getEmail() : user.getEmail();
         if (hasEmail) {
