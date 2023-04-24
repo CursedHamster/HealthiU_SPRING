@@ -29,7 +29,7 @@ public class VerificationListener implements
     private void verify(VerificationEvent event) {
         User user = event.getUser();
         String token = UUID.randomUUID().toString();
-        boolean localeIsUkr = (event.getSource()).equals("uk_UA");
+        boolean localeIsUkr = (event.getSource().toString()).equals("uk_UA");
         boolean hasEmail = event.getEmail() != null;
         String recipientAddress = hasEmail ? event.getEmail() : user.getEmail();
         if (hasEmail) {
