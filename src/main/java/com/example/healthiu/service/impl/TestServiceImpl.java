@@ -12,7 +12,9 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service("testService")
@@ -28,6 +30,38 @@ public class TestServiceImpl implements TestService {
     @Override
     public boolean checkIfTestExistsByUserLogin(String userLogin) {
         return testRepository.findByUserLogin(userLogin).isPresent();
+    }
+
+    @Override
+    public boolean checkIfTestExistsById(Long id) {
+        return testRepository.existsById(id);
+    }
+
+    @Override
+    public void saveTest(TestData testData, User user) {
+        String caloriesString = new Gson().toJson(testData.getCalories());
+        Test test = new Test(user, testData, caloriesString);
+        testRepository.save(test);
+    }
+
+    @Override
+    public void deleteTest(Long id) {
+        testRepository.deleteById(id);
+    }
+
+    @Override
+    public Test findTestByLogin(String login) {
+        return testRepository.findTestByUserLogin(login);
+    }
+
+    @Override
+    public List<TestData> findAllTestsByLogin(String login) {
+        List<Test> testList = testRepository.findAllByUserLogin(login);
+        List<TestData> testDataList = new ArrayList<>();
+        for (Test test : testList) {
+            testDataList.add(new TestData(test));
+        }
+        return testDataList;
     }
 
     @Override
@@ -225,35 +259,6 @@ public class TestServiceImpl implements TestService {
         return calories;
     }
 
-    @Override
-    public void saveTest(TestData testData, User user) {
-        try {
-            String caloriesString = new Gson().toJson(testData.getCalories());
-            Test test = new Test(user,
-                    testData.getGender(),
-                    testData.getAge(),
-                    testData.getHeight(),
-                    testData.getWeight(),
-                    testData.getChestSize(),
-                    testData.getWaistSize(),
-                    testData.getHipSize(),
-                    testData.getBloodType(),
-                    testData.getTestResult(),
-                    testData.getBmi(),
-                    testData.getGoodProducts(),
-                    testData.getBadProducts(),
-                    caloriesString);
-            testRepository.save(test);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-
-    @Override
-    public Test findTestByLogin(String login) {
-        return testRepository.findTestByUserLogin(login);
-    }
-
 
     /////////////////// CALCULATIONS
     private int calculateBmi(TestData testData) {
@@ -429,10 +434,7 @@ public class TestServiceImpl implements TestService {
         }
         return obesity;
     }
-    /////////////////// CALCULATIONS
 
-
-    //////// CALCULATION HELPERS
     private double bmiForAge(int age, double bmi) {
         for (int i = 14; i < 130; i++) {
             if (i == 25) {

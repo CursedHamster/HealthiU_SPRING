@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
 import java.util.Map;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestData implements Serializable {
+    private Long id;
     private String gender;
     private int age;
     private double height;
@@ -28,9 +30,11 @@ public class TestData implements Serializable {
     private String goodProducts = null;
     private String badProducts = null;
     private Map<String, Double> calories = null;
+    private Timestamp timestamp;
 
 
     public TestData(Test test) {
+        this.id = test.getId();
         this.gender = test.getGender();
         this.age = test.getAge();
         this.height = test.getHeight();
@@ -45,6 +49,7 @@ public class TestData implements Serializable {
         this.badProducts = test.getBadProducts();
         Type empMapType = new TypeToken<Map<String, Double>>() {}.getType();
         this.calories = new Gson().fromJson(test.getCalories(), empMapType);
+        this.timestamp = test.getTimestamp();
     }
 
     @Override

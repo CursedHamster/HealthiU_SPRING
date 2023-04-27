@@ -2,7 +2,6 @@ package com.example.healthiu.controller;
 
 import com.example.healthiu.entity.BloodType;
 import com.example.healthiu.entity.TestData;
-import com.example.healthiu.entity.table.Test;
 import com.example.healthiu.service.TestService;
 import com.example.healthiu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -45,20 +45,30 @@ public class TestController {
     public ResponseEntity<TestData> saveTestResult(@RequestParam String login,
                                                    @RequestBody TestData testData) {
         if (testData != null) {
-            testService.saveTest(testData, userService.findUserByLogin(login));
-            return ok(testData);
+            try {
+                testService.saveTest(testData, userService.findUserByLogin(login));
+                return ok(testData);
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/result/show")
-    public ResponseEntity<TestData> getUserTestResult(@RequestParam String login) {
-        if (testService.checkIfTestExistsByUserLogin(login)) {
-            Test test = testService.findTestByLogin(login);
-            TestData testData = new TestData(test);
-            return ok(testData);
+    public ResponseEntity<List<TestData>> getUserTestResult(@RequestParam String login) {
+        List<TestData> testDataList = testService.findAllTestsByLogin(login);
+        return ok(testDataList);
+    }
+
+    @DeleteMapping("/result/delete")
+    public ResponseEntity<String> deleteTest(@RequestParam Long testId) {
+        if (testService.checkIfTestExistsById(testId)) {
+            testService.deleteTest(testId);
+            return ok("success");
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return ok(new TestData());
     }
 }
