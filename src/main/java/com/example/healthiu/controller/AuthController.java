@@ -72,7 +72,7 @@ public class AuthController {
     public ResponseEntity<Map<String, Object>> register(@RequestBody UserData userData, HttpServletRequest request) {
         String username = userData.getLogin();
         if (userService.checkIfUserExists(username) || userService.checkIfEmailExists(userData.getEmail())
-                && userService.checkIfEnabled(username)) {
+                || userService.checkIfEnabled(username)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         User user = userService.register(userData);
