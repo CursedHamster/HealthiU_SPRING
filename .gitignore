@@ -13,6 +13,8 @@ target/
 .settings
 .springBeans
 .sts4-cache
+.dockerignore
+Dockerfile
 
 ### IntelliJ IDEA ###
 .idea
